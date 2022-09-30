@@ -1,0 +1,311 @@
+{% extends 'index_base.html' %}
+{% load static %}
+  {% block content %}
+    <section id="hero">
+      <div
+        class="container flex flex-row w-full bg-gradient-to-b from-white to-purple-400 min-h-screen lg:min-h-[90vh] my-16"
+      >
+        <div class="container flex flex-col md:flex-row mx-auto my-auto">
+          <div
+            class="flex flex-col mx-auto mb-20 md:mb-32 space-y-8 md:mt-0 mt-20 md:space-y-12 md:w-1/2 items-center"
+          >
+            <h1
+              class="max-w-md text-center text-4xl md:text-5xl font-bold text-gray-600"
+            >
+              Zarządzaj mądrze swoimi finansami
+            </h1>
+            <a
+              href="{% url 'accounts:register' %}"
+              class="border-2 border-transparent max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500"
+              >Załóż darmowe konto</a
+            >
+          </div>
+          <div
+            class="flex flex-col mb-20 md:mb-32 space-y-12 md:w-1/2 items-center"
+          >
+            <img src="{% static 'img/logo.png' %}" class="mx-auto w-72 h-72" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div
+        class="container flex flex-col md:flex-row w-11/12 my-20 md:my-32 gap-10 mx-auto"
+      >
+        <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto md:w-1/3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 mb-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <h1 class="text-xl mb-2">Kontroluj swoje wydatki</h1>
+          <p>
+            Możesz dodawać oraz obserowować swoje wydatki na szczegółowych wykresach, dzięki czemu od razu zauważysz na co wydajesz najwięcej.
+          </p>
+        </div>
+        <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto md:w-1/3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-9 w-9 mb-4 mx-auto"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
+          </svg>
+          <h1 class="text-xl mb-2">Naucz się oszczędzać pieniądze</h1>
+          <p>
+            Dzięki metodom oszczędzania, nauczysz się zarządzać swoim budżetem.
+          </p>
+        </div>
+        <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto md:w-1/3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 mb-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+          <h1 class="text-xl mb-2">Zarządzaj swoim budżetem</h1>
+          <p>
+            Masz możliwość stworzenia wielu kont, wprowadzania swoich przychodów oraz wydatków dzięki czemu zarządzanie budżetem będzie jeszcze łatwiejsze.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="aaa">
+      <div
+        class="container flex flex-row w-full bg-gradient-to-t from-white to-purple-400 min-h-[80vh] my-0"
+      >
+        <div class="container flex flex-col md:flex-row mx-auto my-auto">
+          <div
+            class="flex flex-col mx-auto mb-20 md:mb-32 space-y-8 md:mt-10 mt-20 md:space-y-12 md:w-1/2 items-center"
+          >
+            <h1
+              class="max-w-md text-center text-4xl md:text-5xl font-bold text-gray-600"
+            >
+              Naucz się zarządzać swoim budżetem dzięki metodzie 6 słoików lub
+              metodzie 50/30/20
+            </h1>
+            <a
+              href="{% url 'website:methods_info' %}"
+              class="border-2 border-transparent max-w-md text-xl p-4 px-20 md:px-24 pt-2 my-3 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500"
+              >Dowiedz się więcej</a
+            >
+            <!-- <a href="" class="max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto">Załóż darmowe konto</a> -->
+          </div>
+          <div
+            class="flex flex-col mx-7 mb-20 md:mt-10 md:mb-32 space-y-12 md:w-1/2 items-center"
+          >
+            <img src="{% static 'img/ekranik.png' %}" class="mx-auto" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div
+        class="container flex flex-col md:flex-row w-11/12 my-20 gap-10 mx-auto"
+      >
+        <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto md:w-1/2">
+            <svg class="w-10 h-10 mx-auto mb-5" width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M36.5278 45.9722H63.3333C63.6442 45.9694 63.9524 46.0286 64.2402 46.1463C64.5279 46.2639 64.7893 46.4378 65.0091 46.6576C65.2289 46.8774 65.4027 47.1388 65.5204 47.4265C65.638 47.7142 65.6972 48.0225 65.6944 48.3333V67.9166C65.6972 68.2275 65.638 68.5358 65.5204 68.8235C65.4027 69.1112 65.2289 69.3726 65.0091 69.5924C64.7893 69.8122 64.5279 69.986 64.2402 70.1037C63.9524 70.2214 63.6442 70.2805 63.3333 70.2778H36.5278C36.2169 70.2805 35.9087 70.2214 35.6209 70.1037C35.3332 69.986 35.0718 69.8122 34.852 69.5924C34.6322 69.3726 34.4584 69.1112 34.3407 68.8235C34.2231 68.5358 34.1639 68.2275 34.1667 67.9166V48.3333C34.2082 47.7208 34.4703 47.1441 34.9045 46.71C35.3386 46.2759 35.9153 46.0138 36.5278 45.9722V45.9722Z" fill="white"/>
+                <path d="M73.6111 40.9722V82.9167C73.6742 84.056 73.2876 85.1747 72.5343 86.0318C71.781 86.889 70.7214 87.4162 69.5833 87.5H30.4167C29.2786 87.4162 28.2189 86.889 27.4657 86.0318C26.7124 85.1747 26.3257 84.056 26.3889 82.9167V40.9722C26.3968 37.1495 27.4537 33.4023 29.4444 30.1389L31.9444 25.9722V20.1389H30.6944C30.4016 20.1426 30.1109 20.0877 29.8396 19.9773C29.5683 19.867 29.3219 19.7034 29.1148 19.4963C28.9077 19.2892 28.7441 19.0428 28.6338 18.7715C28.5234 18.5002 28.4685 18.2095 28.4722 17.9167V14.5833C28.4685 14.2905 28.5234 13.9998 28.6338 13.7285C28.7441 13.4572 28.9077 13.2108 29.1148 13.0037C29.3219 12.7966 29.5683 12.633 29.8396 12.5227C30.1109 12.4123 30.4016 12.3574 30.6944 12.3611H69.3055C69.5984 12.3574 69.889 12.4123 70.1603 12.5227C70.4316 12.633 70.6781 12.7966 70.8852 13.0037C71.0923 13.2108 71.2559 13.4572 71.3662 13.7285C71.4766 13.9998 71.5315 14.2905 71.5278 14.5833V17.9167C71.5315 18.2095 71.4766 18.5002 71.3662 18.7715C71.2559 19.0428 71.0923 19.2892 70.8852 19.4963C70.6781 19.7034 70.4316 19.867 70.1603 19.9773C69.889 20.0877 69.5984 20.1426 69.3055 20.1389H68.0555V25.9722L70.5555 30.1389C72.564 33.3946 73.6223 37.1469 73.6111 40.9722V40.9722ZM68.8889 20.1389H31.9444Z" fill="white"/>
+                <path d="M68.8889 20.4167H31.1111L29.0278 18.6111L28.0555 15.4167L29.4444 12.6389H69.8611L71.9444 13.8889L71.5278 19.0278L68.8889 20.4167Z" fill="#9B9B9A"/>
+                <path d="M73.6111 39.0278V85.1389L70.1389 87.5H65.6944V50C65.6944 34.3056 49.1667 26.3889 31.1111 26.3889L31.5278 20.1389H68.0556V23.75L68.8889 27.2222L71.9444 32.6389L73.6111 39.0278Z" fill="#D0CFCE"/>
+                <path d="M71.9444 13.8889V18.6111L70.4167 19.8611V20.1389H64.1667V12.6389H70.5555V12.7778L71.9444 13.8889Z" fill="#3F3F3F"/>
+                <path d="M36.5278 45.9722H63.3333C63.6442 45.9694 63.9524 46.0286 64.2402 46.1463C64.5279 46.2639 64.7893 46.4378 65.0091 46.6576C65.2289 46.8774 65.4027 47.1388 65.5204 47.4265C65.638 47.7142 65.6972 48.0225 65.6944 48.3333V67.9166C65.6972 68.2275 65.638 68.5358 65.5204 68.8235C65.4027 69.1112 65.2289 69.3726 65.0091 69.5924C64.7893 69.8122 64.5279 69.986 64.2402 70.1037C63.9524 70.2214 63.6442 70.2805 63.3333 70.2778H36.5278C36.2169 70.2805 35.9087 70.2214 35.6209 70.1037C35.3332 69.986 35.0718 69.8122 34.852 69.5924C34.6322 69.3726 34.4584 69.1112 34.3407 68.8235C34.2231 68.5358 34.1639 68.2275 34.1667 67.9166V48.3333C34.2082 47.7208 34.4703 47.1441 34.9045 46.71C35.3386 46.2759 35.9153 46.0138 36.5278 45.9722V45.9722Z" stroke="black" stroke-width="1.38889" stroke-miterlimit="10"/>
+                <path d="M68.8889 20.1389H31.9444M73.6111 40.9722V82.9167C73.6742 84.056 73.2876 85.1747 72.5343 86.0318C71.781 86.889 70.7214 87.4162 69.5833 87.5H30.4167C29.2786 87.4162 28.2189 86.889 27.4657 86.0318C26.7124 85.1747 26.3257 84.056 26.3889 82.9167V40.9722C26.3968 37.1495 27.4537 33.4023 29.4444 30.1389L31.9444 25.9722V20.1389H30.6944C30.4016 20.1426 30.1109 20.0877 29.8396 19.9773C29.5683 19.867 29.3219 19.7034 29.1148 19.4963C28.9077 19.2892 28.7441 19.0428 28.6338 18.7715C28.5234 18.5002 28.4685 18.2095 28.4722 17.9167V14.5833C28.4685 14.2905 28.5234 13.9998 28.6338 13.7285C28.7441 13.4572 28.9077 13.2108 29.1148 13.0037C29.3219 12.7966 29.5683 12.633 29.8396 12.5227C30.1109 12.4123 30.4016 12.3574 30.6944 12.3611H69.3055C69.5984 12.3574 69.889 12.4123 70.1603 12.5227C70.4316 12.633 70.6781 12.7966 70.8852 13.0037C71.0923 13.2108 71.2559 13.4572 71.3662 13.7285C71.4766 13.9998 71.5315 14.2905 71.5278 14.5833V17.9167C71.5315 18.2095 71.4766 18.5002 71.3662 18.7715C71.2559 19.0428 71.0923 19.2892 70.8852 19.4963C70.6781 19.7034 70.4316 19.867 70.1603 19.9773C69.889 20.0877 69.5984 20.1426 69.3055 20.1389H68.0555V25.9722L70.5555 30.1389C72.564 33.3946 73.6223 37.1469 73.6111 40.9722V40.9722Z" stroke="black" stroke-width="1.38889" stroke-linejoin="round"/>
+            </svg>
+          <h1 class="text-xl mb-2 text-center">Metoda 6 słoików</h1>
+          <p>
+            Metoda 6 słoików polega na podziale miesięcznego dochodu na 6
+            części nazywanych "słoikami". W momencie, gdy dostajemy wypłatę
+            dzielimy ją na 6 części i odpowiednio umieszczamy w tytułowych
+            "słoikach" lub na oddzielnych kontach bankowych.
+          </p>
+        </div>
+        <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto md:w-1/2">
+            <svg class="w-8 h-8 mx-auto mb-8" width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M27.931 25L16.8966 0L38.9655 10L50 0L61.0345 10L83.1034 0L72.069 25H27.931ZM72.069 100H27.931C-5.17241 100 0.344828 80 0.344828 80C0.344828 80 5.86207 45 27.931 35H72.069C94.1379 45 99.6552 80 99.6552 80C99.6552 80 105.172 100 72.069 100ZM25.1724 52.5C25.1724 54.4891 26.0443 56.3968 27.5964 57.8033C29.1484 59.2098 31.2534 60 33.4483 60C35.6432 60 37.7482 59.2098 39.3002 57.8033C40.8522 56.3968 41.7241 54.4891 41.7241 52.5C41.7241 50.5109 40.8522 48.6032 39.3002 47.1967C37.7482 45.7902 35.6432 45 33.4483 45C31.2534 45 29.1484 45.7902 27.5964 47.1967C26.0443 48.6032 25.1724 50.5109 25.1724 52.5V52.5ZM74.8276 82.5C74.8276 80.5109 73.9557 78.6032 72.4036 77.1967C70.8516 75.7902 68.7466 75 66.5517 75C64.3568 75 62.2518 75.7902 60.6998 77.1967C59.1478 78.6032 58.2759 80.5109 58.2759 82.5C58.2759 84.4891 59.1478 86.3968 60.6998 87.8033C62.2518 89.2098 64.3568 90 66.5517 90C68.7466 90 70.8516 89.2098 72.4036 87.8033C73.9557 86.3968 74.8276 84.4891 74.8276 82.5ZM74.8276 51.75L67.3793 45L25.1724 83.25L32.731 90L74.8276 51.75Z" fill="#4B5563"/>
+            </svg>
+                
+          <h1 class="text-xl mb-2 text-center">Metoda 50/30/20</h1>
+          <p>
+            Metoda 50/30/20 polega na podziale miesięcznego dochodu na 3
+            części nazywanych, które odpowiednio stanowią 50%, 30% oraz 20% naszych dochodów. Metoda ta pozwala na wyrobienie
+            właściwych nawyków finansowych oraz pozwala na łatwe kontrolowanie swoich wydatków.
+          </p>
+        </div>
+        <!-- <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <h1>dsadsda dsdasd</h1>
+                <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure, ipsam.</h1>
+                <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure, ipsam.</h1>
+            </div> -->
+      </div>
+    </section>
+
+    <section id="bbb">
+      <div
+        class="container flex flex-row w-full bg-gradient-to-b from-white to-purple-400 min-h-[80vh] my-0"
+      >
+        <div class="container flex flex-col md:flex-row mx-auto my-auto">
+          <div
+            class="flex flex-col mx-auto mb-20 space-y-8 md:mt-0 mt-20 md:space-y-10 items-center"
+          >
+            <h1
+              class="text-center text-4xl md:text-5xl font-bold text-gray-600"
+            >
+              Zarządzanie pieniędzmi może być łatwe
+            </h1>
+            <h1 class="max-w-lg text-center text-2xl text-gray-600">
+              Dzięki Monify możesz nauczyć się zadządzać swoimi finansami oraz śledzić swoje przychody i monitorować wydatki
+            </h1>
+            <a href="{% url 'accounts:register' %}" class="border-2 border-transparent max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Załóż darmowe konto</a>
+            <h1 class="max-w-lg text-center text-2xl text-gray-600">
+                lub
+            </h1>
+            <a href="{{ app_info }}" class="border-2 border-transparent max-w-lg text-lg md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Sprawdź jak działa Monify</a>
+          </div>
+          <!-- <div
+            class="flex flex-col mb-20 md:mb-32 space-y-12 md:w-1/2 items-center"
+          >
+            <img src="logobig.png" class="mx-auto" alt="" />
+          </div> -->
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div
+          x-data="{swiper: null}"
+          x-init="swiper = new Swiper($refs.container, {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            grabCursor: true,
+        
+            breakpoints: {
+                640: {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                },
+                768: {
+                slidesPerView: 2,
+                spaceBetween: 0,
+                },
+                1024: {
+                slidesPerView: 3,
+                spaceBetween: 0,
+                },
+            },
+            })"
+          class="img-container relative w-10/12 mx-auto flex flex-row my-16"
+        >
+          <div class="absolute inset-y-0 left-0 z-10 flex items-center">
+            <button
+              @click="swiper.slidePrev()"
+              class="bg-white -ml-2 lg:-ml-4 flex justify-center items-center w-10 h-10 rounded-full shadow focus:outline-none"
+            >
+              <svg
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="chevron-left w-6 h-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="swiper" x-ref="container">
+            <div class="swiper-wrapper">
+              <!-- Slides -->
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/aplik.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/aplik.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/logo.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute inset-y-0 right-0 z-10 flex items-center">
+            <button
+              @click="swiper.slideNext()"
+              class="bg-white -mr-2 lg:-mr-4 flex justify-center items-center w-10 h-10 rounded-full shadow focus:outline-none"
+            >
+              <svg
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="chevron-right w-6 h-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="popup-image">
+            <span>&times;</span>
+            <img src="{% static 'img/aplik.png' %}" alt="">
+        </div>
+      </div>
+    </section>
+  {% endblock %}
+    {% block js %}
+    <script>
+        $('.img-container img').each(function(index) {
+            $(this).on("click", function ()  {
+                $('.popup-image').css("display", "block");
+                $('.popup-image img').attr("src", $(this).attr('src'))
+            });
+        });
+
+        $('.popup-image span').click(function () {
+            $('.popup-image').css("display", "none");
+        });
+
+
+    </script>
+    {% endblock %}
+

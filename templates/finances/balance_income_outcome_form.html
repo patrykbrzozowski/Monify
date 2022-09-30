@@ -1,0 +1,304 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<!-- <div x-data="getData()"> -->
+  <!-- @submit.prevent="submitData" -->
+<form id="formval" hx-post="{{ request.path }}" hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' class="" @submit.prevent="showModal = false">
+  <!-- <div class="modal-header">
+    <h5 class="modal-title">Edit Movie</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div> -->
+  {% if header == "Dodaj konto" or header == "Edytuj konto" %}
+    <div class="flex justify-between items-center pb-3 mt-5">
+      <p class="text-2xl font-bold">Wybierz okres</p>
+      <div class="cursor-pointer z-50" @click="showModal = false">
+        <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+          <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+        </svg>
+      </div>
+    </div>
+    <div class="">
+      <div class="mb-1 rounded mx-10 grid grid-cols-1" >
+        <label for="{{ form.name.id_for_label }}" class="my-3 text-gray-600">Nazwa konta:</label>
+        {% render_field form.name class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+        <div class="invalid-feedback">{{ form.name.errors|first }}</div>
+      </div>
+      <div class="mb-1 rounded mx-10 grid grid-cols-1">
+        <label for="{{ form.value.id_for_label }}" class="my-3 text-gray-600">Wartość</label>
+        {% render_field form.value class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+        <div class="invalid-feedback1" id="value_error"></div>
+      </div>
+      <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
+        <label for="{{ form.date.id_for_label }}" class="my-3 text-gray-600">Data</label>
+        {% render_field form.date class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+        <div class="invalid-feedback">{{ form.date.errors|first }}</div>
+      </div>
+      <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
+        <label for="{{ form.type.id_for_label }}" class="my-3 text-gray-600">Typ</label>
+        {% render_field form.type class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+        <div class="text-red-500 py-1" id="invalid-feedback-type"></div>
+      </div>
+      <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
+        <label for="{{ form.comment.id_for_label }}" class="my-3 text-gray-600">Komentarz</label >
+        {% render_field form.comment class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" rows="4" %}
+        <div class="invalid-feedback">{{ form.comment.errors|first }}</div>
+      </div>
+    </div>
+
+                  <!--Footer-->
+    <div class="flex justify-end pt-2 my-3">
+        <!-- <button class="px-4 bg-transparent p-3 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" @click="showModal = false">Zamknij</button> -->
+        <button type="submit" id="submitBtn" class="mx-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white ">
+          {% if header == 'Edytuj konto' %}
+          Zapisz
+          {% elif header == "Dodaj konto" %}
+          Dodaj
+          {% endif %}
+        </button>
+        {% if header == 'Edytuj konto' %}
+          <button hx-get="{% url 'finances:balance_delete' object.pk %}" hx-target="#dialog1" @click="showModal = false; showConfirmationModal = true" class="modal-close px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń</button>
+          <!-- <a href="{% url 'finances:balance_delete' object.pk %}"  class="modal-close px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń</a> -->
+        {% endif %}
+          <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showModal = false">
+          Zamknij
+        </button>
+      </div>
+      <!-- <div class="modal-footer">
+        
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="showModal = false">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" @click="showModal = false">Save</button>
+      </div> -->
+      {% elif header == "Dodaj wydatek" or header == "Edytuj wydatek" or header == "Dodaj przychód" or header == "Edytuj przychód" %}
+      <div class="flex justify-between items-center pb-3 mt-5">
+        <p class="text-2xl font-bold">Wybierz okres</p>
+        <div class="cursor-pointer z-50" @click="showModal = false">
+          <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+            <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="">
+        <div class="mb-1 rounded mx-10 grid grid-cols-1">
+          <label for="{{ form.value.id_for_label }}" class="my-3 text-gray-600">Wartość</label>
+          {% render_field form.value class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+          <div class="bg-white invalid-feedback"><span class="text-red-600">{{ form.value.errors|first }}</span></div>
+        </div>
+        <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
+          <label for="{{ form.date.id_for_label }}" class="my-3 text-gray-600">Data</label>
+          {% render_field form.date class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+          <div class="invalid-feedback">{{ form.date.errors|first }}</div>
+        </div>
+        <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
+          <label for="{{ form.type.id_for_label }}" class="my-3 text-gray-600">Kategoria</label>
+          {% render_field form.type class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+          <div class="text-red-500 py-1" id="invalid-feedback-type"></div>
+        </div>
+        <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
+          <label for="{{ form.balance.id_for_label }}" class="my-3 text-gray-600">Konto</label>
+          {% render_field form.balance class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+          <div class="text-red-500 py-1" id="invalid-feedback-balance"></div>
+        </div>
+        <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
+          <label for="{{ form.comment.id_for_label }}" class="my-3 text-gray-600">Komentarz</label >
+          {% render_field form.comment class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" rows="4" %}
+          <div class="invalid-feedback">{{ form.comment.errors|first }}</div>
+        </div>
+      </div>
+  
+                    <!--Footer-->
+      <div class="flex justify-end pt-2 my-3">
+          <!-- <button class="px-4 bg-transparent p-3 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" @click="showModal = false">Zamknij</button> -->
+          <button type="submit" id="submitBtn" class="mx-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white ">
+            {% if header == 'Edytuj wydatek' or header == "Edytuj przychód" %}
+            Zapisz
+            {% elif header == "Dodaj wydatek" or header == "Dodaj przychód" %}
+            Dodaj
+            {% endif %}
+          </button>
+          {% if header == 'Edytuj wydatek' %}
+            <button hx-get="{% url 'finances:outcome_delete' object.pk %}" hx-target="#dialog1" @click="showModal = false; showConfirmationModal = true" class="modal-close px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń</button>
+            <!-- <a href="{% url 'finances:balance_delete' object.pk %}"  class="modal-close px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń</a> -->
+          {% elif header == 'Edytuj przychód' %}
+            <button hx-get="{% url 'finances:income_delete' object.pk %}" hx-target="#dialog1" @click="showModal = false; showConfirmationModal = true" class="modal-close px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń</button>
+          {% endif %}
+            <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showModal = false">
+            Zamknij
+          </button>
+        </div>
+        <!-- <div class="modal-footer">
+          
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="showModal = false">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" @click="showModal = false">Save</button>
+        </div> -->
+
+      {% endif %}
+    </form>
+  <!-- </div> -->
+    {% endwith %}
+
+{% block js %}
+<script>
+
+// function getData() {
+//   return {
+//       formData: {
+//           email: "",
+//           password: "",
+//           password_confirm: ""
+//       },
+//       status: false,
+//       loading: false,
+//       isError: false,
+//       modalHeaderText: "",
+//       modalBodyText: "",
+//       buttonLabel: 'Submit',
+//       submitData() {
+//     // Ensures all fields have data before submitting
+//         var $type_input = $('#id_type');
+//         if ($type_input.val() == "") {
+//           $('#invalid-feedback-type').text('Wybierz element z listy')
+//             return;
+//       }
+//         this.buttonLabel = 'Submitting...';
+//         this.loading = true;
+//         this.modalHeaderText = "Congratulations!!!"
+//         this.modalBodyText = "You have been successfully registered!";
+//         this.status = true;
+//     }
+                
+//     }
+//   }
+
+
+// $(document).ready(function () {
+
+//  $("#formval").validate({
+//     messages: {
+
+//         id_name:{required: "Please enter your nf id",},
+//         id_value: {required:"Please enter a first name",},
+//         id_date: {required:"Please enter a last name",},
+//         id_type: {required:"Please enter a valid email address",},
+//     },
+//     rules: {
+//       id_name: "required",
+//       id_value: "required",
+//       id_date: "required",
+//       id_type: "required",
+
+//         // email: {// compound rule
+//         //     required: true,
+//         //     email: true,
+//         // },
+
+//         // phone:{
+//         //     required: true,
+//         //     pattern: "^[0-9-+s()]*$",
+//         // },
+//         // address: "required",
+//         // city: "required",
+//         // country: "required",
+//         // amount: "required",
+//     },
+
+//   });
+
+// });
+
+
+// function initialData() {
+//         return {
+//           Validate() {
+//             var $type_input = $('#id_type');
+//             if ($type_input.val() != ""){
+//               console.log('inne');
+//               $(':button[type="submit"]').prop('disabled', false);
+//               $('#invalid-feedback-type').text('')
+
+//             } else {
+//               console.log('----');
+//               $(':button[type="submit"]').prop('disabled', true);
+//               $('#invalid-feedback-type').text('Wybierz element z listy')
+//             }
+//           },
+//           ValidateOnClick() {
+//             var $type_input = $('#id_type');
+//             if ($type_input.val() != ""){
+//               $('#invalid-feedback-type').text('')
+//               // console.log(window.showModal)
+//               // Alpine.data('showModal', 'false');
+//             this.showModal = false;
+
+
+//             } else {
+//               $('#invalid-feedback-type').text('Wybierz element z listy')
+//             }
+//           }
+
+//         }
+//       }
+
+  // function Validate() {
+  //   var $name_input = $('#id_name');
+  //   var $value_input = $('#id_value');
+  //   var $type_input = $('#id_type');
+
+  //   if ($type_input.val() != ""){
+  //     console.log('inne');
+  //     $(':button[type="submit"]').prop('disabled', false);
+  //     $(':button[type="submit"]').addClass('hover:bg-purple-400');
+  //     $('#invalid-feedback-type').text('')
+
+
+  //   } else {
+  //     console.log('----');
+  //     $(':button[type="submit"]').prop('disabled', true);
+  //     $(':button[type="submit"]').removeClass('hover:bg-purple-400');
+  //     $('#invalid-feedback-type').text('Wybierz element z listy')
+  //   }
+  // }
+
+  // function getData() {
+  //   return {
+  //     validated: false,
+  //     ValidateOnClick() {
+  //       var $type_input = $('#id_type');
+  //       if ($type_input.val() != ""){
+  //         // $(':button[type="submit"]').prop('disabled', false);
+  //         $('#invalid-feedback-type').text('')
+
+  //         // console.log(window.showModal)
+  //         // Alpine.data('showModal', 'false');
+  //         this.validated = true;
+
+  //       } else {
+  //         // $(':button[type="submit"]').prop('disabled', true);
+  //         $('#invalid-feedback-type').text('Wybierz element z listy')
+  //       }
+  //     }
+  //   }
+  // }
+
+  // function ValidateOnClick() {
+    
+  //   var $type_input = $('#id_type');
+  //   if ($type_input.val() != ""){
+  //     $(':button[type="submit"]').prop('disabled', false);
+  //     $('#invalid-feedback-type').text('')
+
+  //     // console.log(window.showModal)
+  //     // Alpine.data('showModal', 'false');
+  //     console.log(this.showModal);
+  //     this.showModal = false;
+
+  //   } else {
+  //     $(':button[type="submit"]').prop('disabled', true);
+  //     $('#invalid-feedback-type').text('Wybierz element z listy')
+  //   }
+  // }
+</script>
+{% endblock %}
+

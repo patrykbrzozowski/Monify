@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <div>
+        <h1 class="text-4xl my-8 mx-10 text-gray-600">
+            Oszczędności
+        </h1>
+        <div
+        class="bg-purple-600 text-white shadow-xl border border-purple-700 my-10 mx-10 rounded-xl md:w-11/12"
+        >
+        <div class="p-10 mx-auto my-auto lg:grid lg:grid-cols-2 gap-1">
+            <div class="">
+            <h1 class="mx-auto mb-7 text-2xl md:text-4xl">Twoje oszczędności:</h1>
+            <p class="mx-auto text-xl md:text-2xl mb-2">10000 zł</p>
+            <p class="mx-auto text-xs">Data utworzenia konta: 20/05/2022</p>
+            </div>
+            <div class="hidden 2xl:block">
+            <i class="ml-80 fa-solid fa-sack-dollar text-9xl text-purple-700"></i>
+            </div>
+        </div>
+        </div>
+        <div class="flex items-start">
+            <button type="button" class="bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-4 rounded-full mx-10" @click="showModal = true">Wybierz okres</button>
+        
+            <!--Overlay-->
+            <div class="overflow-auto" style="background-color: rgba(0,0,0,0.5)" x-show="showModal" :class="{ 'absolute inset-0 z-10 flex items-center justify-center': showModal }">
+              <!--Dialog-->
+              <div class="bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg py-4 text-left px-6" x-show="showModal" @click.away="showModal = false">
+        
+                <!--Title-->
+                <div class="flex justify-between items-center pb-3">
+                  <p class="text-2xl font-bold">Wybierz okres</p>
+                  <div class="cursor-pointer z-50" @click="showModal = false">
+                    <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                      <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                    </svg>
+                  </div>
+                </div>
+        
+                <!-- Modal content -->
+                <form action="">
+                    <div class="flex flex-col space-y-5">
+                        <!-- <button type="button" class="mx-auto mt-3 w-1/2 text-sm bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-3 rounded-full" @click="showDatePicker = !showDatePicker">Wybierz datę</button> -->
+                        <!-- Hidden date pickers -->
+                        <!-- <div class="flex flex-col mx-auto" x-show="showDatePicker">
+                            <div>
+                                <label class="mr-10" for="start">Od:</label>
+                                <input class="" type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31">
+                                
+                            </div>
+                            <div>
+                                <label class="mr-10" for="start">Do:</label>
+                                <input class="" type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31">
+                                
+                            </div>
+                        </div> -->
+                        <!-- <input class="sr-only peer" type="radio" value="yes" name="answer" id="answer_yes">
+
+                        <label class="flex p-5 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:ring-green-500 peer-checked:ring-2 peer-checked:border-transparent" for="answer_yes">Yes</label>
+
+                        <div class="absolute hidden w-5 h-5 peer-checked:block top-5 right-3">
+                        👍
+                        </div>
+                        <input type="radio" class="my-5 mx-auto w-1/2 text-sm bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-3 rounded-full">Tydzień</button>
+                        <button type="button" class="my-5 mx-auto w-1/2 text-sm bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-3 rounded-full">Miesiąc</button>
+                        <button type="button" class="my-5 mx-auto w-1/2 text-sm bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-3 rounded-full">Rok</button> -->
+
+                        <ul class="grid grid-cols-1 gap-y-5 m-10 mx-auto w-1/2">
+                            <li class="relative">
+                                <input class="sr-only peer" type="radio" value="chose_date" name="answer" id="chose_date">
+                                <label class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent" for="chose_date" @click="showDatePicker = !showDatePicker">Wybierz datę</label>
+                                <div class="flex flex-col my-5 mx-auto" x-show="showDatePicker">
+                                    <div>
+                                        <label class="mr-10" for="start">Od:</label>
+                                        <input class="" type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31">
+                                        
+                                    </div>
+                                    <div>
+                                        <label class="mr-10" for="start">Do:</label>
+                                        <input class="" type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31">
+                                        
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="relative">
+                              <input class="sr-only peer" type="radio" value="yes" name="answer" id="answer_yes">
+                              <label class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent" for="answer_yes">Tydzień</label>
+                            </li>
+
+                            <li class="relative">
+                              <input class="sr-only peer" type="radio" value="month" name="answer" id="answer_no">
+                              <label class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent" for="answer_no">Miesiąc</label>
+                          
+                             </li>
+                          
+                            <li class="relative">
+                              <input class="sr-only peer" type="radio" value="year" name="answer" id="answer_maybe">
+                              <label class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent" for="answer_maybe">Rok</label>
+                            </li>
+                          </ul>
+                    </div>
+                </form>
+                <!-- <p>Modal content can go here</p>
+                <p>...</p>
+                <p>...</p>
+                <p>...</p>
+                <p>...</p> -->
+        
+                <!--Footer-->
+                <div class="flex justify-end pt-2 mt-3">
+                    <button type="submit" class="modal-close px-4 bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400">Wybierz</button>
+                    <button class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2" @click="showModal = false">Zamknij</button>
+                </div>
+        
+        
+              </div>
+              <!--/Dialog -->
+            </div><!-- /Overlay -->
+        <!-- <div class="mx-10 relative rounded-xl lg:w-1/5"> -->
+            <!-- <button
+                x-on:click="openDropdownChartInterval = !openDropdownChartInterval"
+                class="block px-10 w-full py-2 border border-gray-600 text-gray-500 hover:text-gray-700 rounded-md"
+            >
+                <div
+                class="flex flex-row space-x-3"
+                :class="{'text-gray-700': openDropdownChartInterval === true}"
+                >
+                <h3>
+                    Rok
+                    <i
+                    class="lg:ml-4 2xl:ml-28"
+                    :class="{'fa-solid fa-angle-up': openDropdownChartInterval === true, 'fa-solid fa-angle-down': openDropdownChartInterval === false}"
+                    ></i>
+                </h3>
+                </div>
+            </button> -->
+            <!-- Hidden -->
+            <!-- <div
+                class="shadow-2xl bg-white"
+                x-show="openDropdownChartInterval"
+            >
+                <a
+                href=""
+                class="block px-4 w-full py-3 text-gray-500 hover:text-gray-700"
+                >
+                <div class="flex flex-row space-x-3">
+                    <h3>Miesiąc</h3>
+                </div>
+                </a>
+                <a
+                href=""
+                class="block px-4 py-3 text-gray-500 hover:text-gray-700"
+                >
+                <div class="flex flex-row space-x-3">
+                    <h3>Tydzień</h3>
+                </div>
+                </a>
+            </div> -->
+            
+            
+        <!-- </div> -->
+        
+        </div>
+        <div>
+            <h1 class="text-3xl my-8 mx-10 text-gray-600">
+                Rok - 2022
+            </h1>
+        </div>
+        
+        <div>
+            <h1 class="text-3xl my-8 mx-10 text-purple-600">
+                Miesiąc - Maj
+            </h1>
+        </div>
+        <div>
+            <h1 class="text-3xl my-8 mx-10 text-gray-600">
+                Tydzień - 01.05 - 07.05
+            </h1>
+        </div>
+    </div>
+    
+{% endblock %}

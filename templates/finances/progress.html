@@ -1,0 +1,759 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+      <div class="container text-gray-500"
+            x-data="alpineInstance()"
+            x-init="fetchProgressData()"
+      >
+        <h1 class="text-4xl my-10 mx-10" x-text="'Przegląd postępów - ' + progress_data.actual_month + '(' + progress_data.actual_year + ')'"></h1>
+        {% if user_saving_method == 'METODA 6 SŁOIKÓW' %}
+        <div>
+            <div class="grid md:grid-cols-3 gap-6 mx-14 my-5">
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_jar1 === progress_data.current_today_goal_jar1}">
+                    <h1 class="text-2xl font-bold mb-3">Słoik 1</h1>
+                    <h2 class="text-xl mb-2">Niezbędne wydatki - 55%</h2>
+                    <p class="md:mt-9 mb-1" x-text="'Cel: ' + progress_data.current_today_goal_jar1 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_jar1 + ' ' + progress_data.user_currency"></p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_jar2 === progress_data.current_today_goal_jar2345}">
+                    <h1 class="text-2xl font-bold mb-3">Słoik 2</h1>
+                    <h2 class="text-xl mb-2">Duże/niespodziewane wydatki - 10%</h2>
+                    <p class="mb-1" x-text="'Cel: ' + progress_data.current_today_goal_jar2345 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_jar2 + ' ' + progress_data.user_currency"></p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_jar3 === progress_data.current_today_goal_jar2345}">
+                    <h1 class="text-2xl font-bold mb-3">Słoik 3</h1>
+                    <h2 class="text-xl mb-2">Przyjemności/rozrywka - 10%</h2>
+                    <p class="md:mt-9 mb-1" x-text="'Cel: ' + progress_data.current_today_goal_jar2345 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_jar3 + ' ' + progress_data.user_currency"></p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_jar4 === progress_data.current_today_goal_jar2345}">
+                    <h1 class="text-2xl font-bold mb-3">Słoik 4</h1>
+                    <h2 class="text-xl mb-2">Edukacja - 10%</h2>
+                    <p class="md:mt-9 mb-1" x-text="'Cel: ' + progress_data.current_today_goal_jar2345 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_jar4 + ' ' + progress_data.user_currency"></p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_jar5 === progress_data.current_today_goal_jar2345}">
+                    <h1 class="text-2xl font-bold mb-3">Słoik 5</h1>
+                    <h2 class="text-xl mb-2">Oszczędności/inwestycje  - 10%</h2>
+                    <p class="md:mt-9 mb-1" x-text="'Cel: ' + progress_data.current_today_goal_jar2345 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_jar5 + ' ' + progress_data.user_currency"></p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_jar6 === progress_data.current_today_goal_jar6}">
+                    <h1 class="text-2xl font-bold mb-3">Słoik 6</h1>
+                    <h2 class="text-xl mb-2">Pomoc innym/dobroczynność - 5%</h2>
+                    <p class="md:mt-9 mb-1" x-text="'Cel: ' + progress_data.current_today_goal_jar6 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_jar6 + ' ' + progress_data.user_currency"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden text-gray-600 md:grid grid-rows-1 my-14">
+          <div class=" md:mx-5">
+            <div
+              class="mx-8 border border-gray-700 border-b-purple-700 border-b-4 shadow-lg p-8 rounded-lg mt-6"
+            >
+              <h1 class="text-lg font-bold" x-text="'Wykres postępów ' + '(' + progress_data.actual_year + ')'"></h1>
+              <!-- <p class="text-xs mb-3" x-text="'Od początku miesiąca ' + '(' + summary_data.actual_month + ')'"></p> -->
+              <div class="card-body">
+                <div class="chart-area">
+                    <canvas height="100vh" id="line_chart_progress_6jars"></canvas>
+                </div>
+            </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="">
+          <select class="mx-12 relative rounded-xl lg:w-1/6 my-10 uppercase bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 p-2.5" id="year-select" x-model="filter">
+            <template x-for="year in progress_data.years">
+              <option x-value="year" x-text="year"></option>
+            </template>
+          </select> -->
+          <!-- <button
+              x-on:click="openDropdownChartInterval = !openDropdownChartInterval"
+              class="block px-10 w-full py-2 border border-gray-600 text-gray-500 hover:text-gray-700 rounded-md"
+            >
+              <div
+                class="flex flex-row space-x-3"
+                :class="{'text-gray-700': openDropdownChartInterval === true}"
+              >
+                <h3>
+                  Rok 2022
+                  <i
+                    class="ml-5"
+                    :class="{'fa-solid fa-angle-up': openDropdownChartInterval === true, 'fa-solid fa-angle-down': openDropdownChartInterval === false}"
+                  ></i>
+                </h3>
+              </div>
+            </button> -->
+            <!-- Hidden -->
+            <!-- <div
+              class="shadow-2xl bg-white"
+              x-show="openDropdownChartInterval"
+            >
+            <template x-for="year in progress_data.years">
+              <a
+                href=""
+                class="block px-4 w-full py-3 text-gray-500 hover:text-gray-700"
+              >
+                <div class="flex flex-row space-x-3">
+                  <h3 x-text="year.year"></h3>
+                </div>
+              </a>
+            </template>
+            </div> -->
+        <!-- </div> -->
+
+        
+
+
+        <div class="container pt-3 mx-auto w-11/12 mb-10">
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-4">
+            <template x-for="item in filteredYearData" :key="item.month">
+              <div
+                class="flex items-center shadow hover:bg-gray-100 hover:shadow-lg hover:rounded transition duration-150 ease-in-out transform hover:scale-105 p-3"
+                :class="{'hover:bg-red-100': item.goal_jar_1 != item.jar1 || item.goal_jar_2345 != item.jar2 || item.goal_jar_2345 != item.jar3 || item.goal_jar_2345 != item.jar4 || item.goal_jar_2345 != item.jar5 || item.goal_jar_6 != item.jar6, 'hover:bg-green-100': item.goal_jar_1 == item.jar1 || item.goal_jar_2345 == item.jar2 || item.goal_jar_2345 == item.jar3 || item.goal_jar_2345 == item.jar4 || item.goal_jar_2345 == item.jar5 || item.goal_jar_6 == item.jar6}"
+              >
+              <div>
+                <h1 class="text-2xl py-5"><span x-text="item.month + ' (' + item.year + ')'"></span> <span><i class="fa-solid" :class="{'fa-check': item.goal_jar_1 == item.jar1, 'fa-x': item.goal_jar_1 != item.jar1}"></i></span></h1>
+                <div class="text-base">
+                  <p>Słoik 1 - Niezbędne wydatki (55%) - Cel <span x-text="item.goal_jar_1 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.jar1 + ' ' + progress_data.user_currency"></span></p>
+                  <p>Słoik 2 - Duże/niespodziewane wydatki (10%) - Cel <span x-text="item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.jar2 + ' ' + progress_data.user_currency"></span></p>
+                  <p>Słoik 3 - Przyjemności/rozrywka (10%) - Cel <span x-text="item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.jar3 + ' ' + progress_data.user_currency"></span></p>
+                  <p>Słoik 4 - Edukacja (10%) - Cel <span x-text="item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.jar4 + ' ' + progress_data.user_currency"></span></p>
+                  <p>Słoik 5 - Oszczędności/inwestycje (10%) - Cel <span x-text="item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.jar5 + ' ' + progress_data.user_currency"></span></p>
+                  <p>Słoik 6 - Pomoc innym/dobroczynność (5%) - Cel <span x-text="item.goal_jar_6 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.jar6 + ' ' + progress_data.user_currency"></span></p>
+                  <!-- <p>
+                    <span
+                      class="text-gray-900"
+                      :class="{'text-green-400': item.employee_age <= 63, 'text-red-300': item.employee_age > 63}"
+                      x-text="item.month"
+                    >
+                    </span>
+                    <span  x-show="item.employee_age <= 30">Dobrze</span>
+                  </p>
+                  <p
+                    class="text-gray-600"
+                    x-text="'$'+item.employee_salary/100"
+                  ></p> -->
+                </div>
+              </div>
+                
+              </div>
+            </template>
+          </div>
+    
+          <div
+            class="w-full md:w-1/2 mx-auto py-6 flex justify-between items-center"
+            x-show="pageCount() > 1"
+          >
+            <!--First Button-->
+            <button
+              x-on:click="viewPage(0)"
+              :disabled="pageNumber==0"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber==0 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                <line x1="5" y1="19" x2="5" y2="5"></line>
+              </svg>
+            </button>
+    
+            <!--Previous Button-->
+            <button
+              x-on:click="prevPage"
+              :disabled="pageNumber==0"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber==0 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+    
+            <!-- Display page numbers -->
+            <!-- <template x-for="(page,index) in pages()" :key="index">
+              <button
+                class="px-3 py-2 rounded"
+                :class="{ 'bg-indigo-600 text-white font-bold' : index === pageNumber }"
+                type="button"
+                x-on:click="viewPage(index)"
+              >
+                <span x-text="index+1"></span>
+              </button>
+            </template> -->
+    
+            <!--Next Button-->
+            <button
+              x-on:click="nextPage"
+              :disabled="pageNumber >= pageCount() -1"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber >= pageCount() -1 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+    
+            <!--Last Button-->
+            <button
+              x-on:click="viewPage(Math.ceil(total/size)-1)"
+              :disabled="pageNumber >= pageCount() -1"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber >= pageCount() -1 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+            </button>
+          </div>
+    
+          <div>
+            <div
+              class="mt-6 flex flex-wrap justify-between items-center text-sm leading-5 text-gray-700"
+            >
+              <div
+                class="w-full sm:w-auto text-center sm:text-left"
+                x-show="pageCount() > 1"
+              >
+                Strona <span x-text="pageNumber+1"> </span>/<span x-text="pageCount()"></span>
+              </div>
+    
+              <div
+                class="w-full sm:w-auto text-center sm:text-right"
+                x-show="total > 0"
+              >
+                Łącznie <span class="font-bold" x-text="total"></span> wyników
+              </div>
+    
+              <!--Message to display when no results-->
+              <div
+                class="mx-auto mb-5 flex items-center font-bold"
+                x-show="total===0"
+              >
+                <!-- <svg
+                  class="h-8 w-8 text-red-500"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <circle cx="12" cy="12" r="9" />
+                  <line x1="9" y1="10" x2="9.01" y2="10" />
+                  <line x1="15" y1="10" x2="15.01" y2="10" />
+                  <path d="M9.5 16a10 10 0 0 1 6 -1.5" />
+                </svg> -->
+    
+                <span class="text-2xl ml-4">Nie wprowadzono jeszcze żadnych danych.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% elif user_saving_method == 'METODA 50/30/20' %}
+          <div>
+            <div class="grid md:grid-cols-3 gap-6 mx-14 my-5">
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_box50 === progress_data.current_today_goal_box50}">
+                    <h1 class="text-2xl font-bold mb-3">Niezbędne wydatki - 50%</h1>
+                    <!-- <h2 class="text-xl mb-2">Niezbędne wydatki - 55%</h2> -->
+                    <p class="md:mt-9 mb-1" x-text="'Cel: ' + progress_data.current_today_goal_box50 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_box50 + ' ' + progress_data.user_currency"></p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_box30 === progress_data.current_today_goal_box30}">
+                    <h1 class="text-2xl font-bold mb-3">Zbędne wydatki - 30%</h1>
+                    <!-- <h2 class="text-xl mb-2">Duże/niespodziewane wydatki - 10%</h2> -->
+                    <p class="md:mt-9 mb-1" x-text="'Cel: ' + progress_data.current_today_goal_box30 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_box30 + ' ' + progress_data.user_currency"></p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-7 h-56"
+                    :class="{'border-2 border-green-600': progress_data.current_today_box20 === progress_data.current_today_goal_box20}">
+                    <h1 class="text-2xl font-bold mb-3">Oszczędności i inwestycje - 20%</h1>
+                    <!-- <h2 class="text-xl mb-2">Przyjemności/rozrywka - 10%</h2> -->
+                    <p class="mb-1" x-text="'Cel: ' + progress_data.current_today_goal_box20 + ' ' + progress_data.user_currency"></p>
+                    <p x-text="'Zawartość: ' + progress_data.current_today_box20 + ' ' + progress_data.user_currency"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden text-gray-600 md:grid grid-rows-1 my-14">
+          <div class=" md:mx-5">
+            <div
+              class="mx-8 border border-gray-700 border-b-purple-700 border-b-4 shadow-lg p-8 rounded-lg mt-6"
+            >
+              <h1 class="text-lg font-bold" x-text="'Wykres postępów ' + '(' + progress_data.actual_year + ')'"></h1>
+              <!-- <p class="text-xs mb-3" x-text="'Od początku miesiąca ' + '(' + summary_data.actual_month + ')'"></p> -->
+              <div class="card-body">
+                <div class="chart-area">
+                    <canvas height="100vh" id="line_chart_progress_503020"></canvas>
+                </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container pt-3 mx-auto w-11/12 mb-10">
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-4">
+            <template x-for="item in filteredYearData" :key="item.month">
+              <div
+                class="flex items-center shadow hover:bg-gray-100 hover:shadow-lg hover:rounded transition duration-150 ease-in-out transform hover:scale-105 p-3"
+                :class="{'hover:bg-red-100': item.goal_box50 != item.box50 || item.goal_box30 != item.box30 || item.goal_box20 != item.box20, 'hover:bg-green-100': item.goal_box50 == item.box50 || item.goal_box30 == item.box30 || item.goal_box20 == item.box20}"
+              >
+              <div>
+                <h1 class="text-2xl py-5"><span x-text="item.month + ' (' + item.year + ')'"></span> <span><i class="fa-solid" :class="{'fa-check': item.goal_box50 == item.box50, 'fa-x': item.goal_box50 != item.box50}"></i></span></h1>
+                <div class="text-base">
+                  <p>Niezbędne wydatki (50%) - Cel <span x-text="item.goal_box50 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.box50 + ' ' + progress_data.user_currency"></span></p>
+                  <p>Zbędne wydatki (30%) - Cel <span x-text="item.goal_box30 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.box30 + ' ' + progress_data.user_currency"></span></p>
+                  <p>Oszczędności/inwestycje (20%) - Cel <span x-text="item.goal_box20 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="item.box20 + ' ' + progress_data.user_currency"></span></p>
+                </div>
+              </div>
+                
+              </div>
+            </template>
+          </div>
+    
+          <div
+            class="w-full md:w-1/2 mx-auto py-6 flex justify-between items-center"
+            x-show="pageCount() > 1"
+          >
+            <!--First Button-->
+            <button
+              x-on:click="viewPage(0)"
+              :disabled="pageNumber==0"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber==0 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                <line x1="5" y1="19" x2="5" y2="5"></line>
+              </svg>
+            </button>
+    
+            <!--Previous Button-->
+            <button
+              x-on:click="prevPage"
+              :disabled="pageNumber==0"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber==0 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+    
+            <!-- Display page numbers -->
+            <!-- <template x-for="(page,index) in pages()" :key="index">
+              <button
+                class="px-3 py-2 rounded"
+                :class="{ 'bg-indigo-600 text-white font-bold' : index === pageNumber }"
+                type="button"
+                x-on:click="viewPage(index)"
+              >
+                <span x-text="index+1"></span>
+              </button>
+            </template> -->
+    
+            <!--Next Button-->
+            <button
+              x-on:click="nextPage"
+              :disabled="pageNumber >= pageCount() -1"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber >= pageCount() -1 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+    
+            <!--Last Button-->
+            <button
+              x-on:click="viewPage(Math.ceil(total/size)-1)"
+              :disabled="pageNumber >= pageCount() -1"
+              :class="{ 'disabled cursor-not-allowed text-gray-600' : pageNumber >= pageCount() -1 }"
+            >
+              <svg
+                class="h-8 w-8 text-purple-600"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+            </button>
+          </div>
+    
+          <div>
+            <div
+              class="mt-6 flex flex-wrap justify-between items-center text-sm leading-5 text-gray-700"
+            >
+              <div
+              class="w-full sm:w-auto text-center sm:text-left"
+              x-show="pageCount() > 1"
+            >
+              Strona <span x-text="pageNumber+1"> </span>/<span x-text="pageCount()"></span>
+            </div>
+  
+            <div
+              class="w-full sm:w-auto text-center sm:text-right"
+              x-show="total > 0"
+            >
+              Łącznie <span class="font-bold" x-text="total"></span> wyników
+            </div>
+    
+              <!--Message to display when no results-->
+              <div
+                class="mx-auto mb-5 flex items-center font-bold"
+                x-show="total===0"
+              >
+                <!-- <svg
+                  class="h-8 w-8 text-red-500"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <circle cx="12" cy="12" r="9" />
+                  <line x1="9" y1="10" x2="9.01" y2="10" />
+                  <line x1="15" y1="10" x2="15.01" y2="10" />
+                  <path d="M9.5 16a10 10 0 0 1 6 -1.5" />
+                </svg> -->
+    
+                <span class="text-2xl ml-4">Nie wprowadzono jeszcze żadnych danych.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <h1>Musisz najpierw wybrać metodę oszczędzania. Możesz to zrobić w ustawieniach profilu.</h1>
+        {% endif %}
+
+        <!-- <div class="">
+          <template x-for="year_data_item in progress_data.year_data">
+            <div class="mx-12 my-6">
+              <h1 class="text-2xl py-5" x-text="year_data_item.month"></h1>
+              <p>Słoik 1 - Niezbędne wydatki (55%) - Cel <span x-text="year_data_item.goal_jar_1 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="year_data_item.jar1 + ' ' + progress_data.user_currency"></span></p>
+              <p>Słoik 2 - Duże/niespodziewane wydatki (10%) - Cel <span x-text="year_data_item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="year_data_item.jar2 + ' ' + progress_data.user_currency"></span></p>
+              <p>Słoik 3 - Przyjemności/rozrywka (10%) - Cel <span x-text="year_data_item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="year_data_item.jar3 + ' ' + progress_data.user_currency"></span></p>
+              <p>Słoik 4 - Edukacja (10%) - Cel <span x-text="year_data_item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="year_data_item.jar4 + ' ' + progress_data.user_currency"></span></p>
+              <p>Słoik 5 - Oszczędności/inwestycje (10%) - Cel <span x-text="year_data_item.goal_jar_2345 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="year_data_item.jar5 + ' ' + progress_data.user_currency"></span></p>
+              <p>Słoik 6 - Pomoc innym/dobroczynność (5%) - Cel <span x-text="year_data_item.goal_jar_6 + ' ' + progress_data.user_currency"></span> - Zawartość <span x-text="year_data_item.jar6 + ' ' + progress_data.user_currency"></span></p> -->
+              <!-- <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+              <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+              <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+              <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p> -->
+            <!-- </div>
+          </template>
+        </div> -->
+
+
+        <!-- <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Styczeń</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Luty</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Marzec</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Kwiecień</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Maj</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Czerwiec</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Lipiec</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Sierpień</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Wrzesień</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Październik</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Listopad</h1>
+          <p>Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p>Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+        </div>
+        <div class="mx-12 my-6">
+          <h1 class="text-2xl py-5">Grudzień</h1>
+          <p class="text-lime-500 py-4">Słoik 1 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p class="text-red-500 py-4">Słoik 2 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p class="py-4">Słoik 3 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p class="py-4">Słoik 4 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p class="py-4">Słoik 5 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          <p class="py-4">Słoik 6 - Niezbędne wydatki - Cel 2750 zł (55%) - Zawartość 1100 zł</p>
+          h1
+        </div> -->
+
+
+    </div>
+  {% endblock %}
+  {% block js %}
+    <script>
+      function alpineInstance() {
+        return {
+          progress_data: [],
+          search: "",
+          pageNumber: 0,
+          size: 3,
+          total: "",
+          filter: '',
+          fetchProgressData() {
+            fetch('/finances/get_progress_data')
+                    .then(response => response.json())
+                    .then(data => this.progress_data = data)
+          },
+          filteredProgressDataByYear() {
+            return this.progress_data
+                ? this.progress_data.year_data.filter(option => {
+                    return (option.year == this.filter)
+                })
+               : {}
+          },
+
+          get filteredYearData() {
+            const start = this.pageNumber * this.size,
+              end = start + this.size;
+
+            if (this.search === "") {
+              this.total = this.progress_data.year_data.length;
+              return this.progress_data.year_data.slice(start, end);
+            }
+
+            //Return the total results of the filters
+            this.total = this.progress_data.year_data.filter((item) => {
+              return item.month
+                .toLowerCase()
+                .includes(this.search.toLowerCase());
+            }).length;
+
+            //Return the filtered data
+            return this.progress_data.year_data
+              .filter((item) => {
+                return item.month
+                  .toLowerCase()
+                  .includes(this.search.toLowerCase());
+              })
+              .slice(start, end);
+          },
+
+          //Create array of all pages (for loop to display page numbers)
+          pages() {
+            return Array.from({
+              length: Math.ceil(this.total / this.size),
+            });
+          },
+
+          //Next Page
+          nextPage() {
+            this.pageNumber++;
+          },
+
+          //Previous Page
+          prevPage() {
+            this.pageNumber--;
+          },
+
+          //Total number of pages
+          pageCount() {
+            return Math.ceil(this.total / this.size);
+          },
+
+          //Return the start range of the paginated results
+          startResults() {
+            return this.pageNumber * this.size + 1;
+          },
+
+          //Return the end range of the paginated results
+          endResults() {
+            let resultsOnPage = (this.pageNumber + 1) * this.size;
+
+            if (resultsOnPage <= this.total) {
+              return resultsOnPage;
+            }
+
+            return this.total;
+          },
+
+          //Link to navigate to page
+          viewPage(index) {
+            this.pageNumber = index;
+          },
+        };
+        
+    }
+
+    $('#year-select').on('change', function() {
+        let year = $('#year-select').val()
+        alpineInstance().filteredProgressDataByYear()
+    })
+      
+    </script>
+
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+        integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/common_charts.js' %}"></script>
+<script src="{% static 'js/year_overview_charts.js' %}"></script>
+    
+  
+  {% endblock %}
+

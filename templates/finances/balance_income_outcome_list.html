@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    
+
+    <!-- Table-->
+    
+
+<div>
+
+    <h1 class="ml-10 my-8 text-3xl">Konta</h1>
+
+    <div class="flex flex-row md:ml-10 mx-5">
+        <button class="mx-5 shadow-md border-2 border-purple-600 rounded-lg px-3 py-2 text-gray-600 hover:text-gray-800 hover:border-purple-800" @click="showModal = true" type="button" hx-get="{% url 'finances:balance_create' %}" hx-target="#dialog"><i class="fa-solid fa-plus"></i> Dodaj konto</button>
+        <button class="mx-5 shadow-md border-2 border-purple-600 rounded-lg px-3 py-2 text-gray-600 hover:text-gray-800 hover:border-purple-800" @click="showModal = true" type="button" hx-get="{% url 'finances:raport_form' %}?raport_object=balances" hx-target="#dialog"><i class="fa-solid fa-download"></i> Generuj raport</button>
+        
+    </div>
+
+
+    <!-- <table id="list-table" class="ml-10 my-6 table-auto gap-10">
+         <thead>
+        <tr>
+        </tr>
+        </thead> 
+        <tbody hx-get="{% url 'finances:balance_list_get' %}" hx-trigger="load" id="table-body" class="">
+            <tr><td>Ładuje dane...</td></tr>
+        </tbody>
+    </table> -->
+
+    <div class="relative md:w-10/12 mx-10 my-10 overflow-x-auto sm:rounded-lg">
+        <div hx-trigger="load, movieListChanged from:body" hx-get="{% url 'finances:balance_list_get' %}"  hx-target="this" id="loadthis"></div>
+        <!-- <table class="w-full text-sm text-left text-gray-500"> -->
+            <!-- <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Product name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Color
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Category
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Price
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        <span class="sr-only">Edit</span>
+                    </th>
+                </tr>
+            </thead> -->
+            <!-- <tbody  id="table-body"> -->
+                <!-- <tr class="border-b  odd:bg-white even:bg-gray-300 ">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900">
+                        Apple MacBook Pro 17"
+                    </th>
+                    <td class="px-6 py-4">
+                        Sliver
+                    </td>
+                    <td class="px-6 py-4">
+                        Laptop
+                    </td>
+                    <td class="px-6 py-4">
+                        $2999
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                </tr>
+                <tr class="border-b  odd:bg-white even:bg-gray-300">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        Microsoft Surface Pro
+                    </th>
+                    <td class="px-6 py-4">
+                        White
+                    </td>
+                    <td class="px-6 py-4">
+                        Laptop PC
+                    </td>
+                    <td class="px-6 py-4">
+                        $1999
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                </tr>
+                <tr class="border-b odd:bg-white even:bg-gray-300">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        Magic Mouse 2
+                    </th>
+                    <td class="px-6 py-4">
+                        Black
+                    </td>
+                    <td class="px-6 py-4">
+                        Accessories
+                    </td>
+                    <td class="px-6 py-4">
+                        $99
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                </tr>
+                <tr class="border-b  odd:bg-white even:bg-gray-300">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        Google Pixel Phone
+                    </th>
+                    <td class="px-6 py-4">
+                        Gray
+                    </td>
+                    <td class="px-6 py-4">
+                        Phone
+                    </td>
+                    <td class="px-6 py-4">
+                        $799
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                </tr>
+                <tr class="odd:bg-white even:bg-gray-300">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        Apple Watch 5
+                    </th>
+                    <td class="px-6 py-4">
+                        Red
+                    </td>
+                    <td class="px-6 py-4">
+                        Wearables
+                    </td>
+                    <td class="px-6 py-4">
+                        $999
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                </tr> -->
+            <!-- </tbody> -->
+        <!-- </table> -->
+    </div>
+    <!-- {% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %} -->
+</div>
+
+
+
+
+{% endblock %}
+<script src="{% static 'js/dialog.js' %}"></script>
+{% block js %}
+
+    
+{% endblock %}

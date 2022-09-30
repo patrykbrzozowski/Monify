@@ -1,0 +1,65 @@
+{% extends 'index_base.html' %}
+{% load static %}
+  {% block content %}
+    
+    <section>
+      <h1 class="max-w-md my-7 text-center text-4xl md:text-5xl text-gray-600">Jak działa Monify</h1>
+      <div class="flex flex-col mx-10 my-7 md:mx-20 w-3/4">
+        <div class="flex flex-row my-6 md:my-12">
+          <img src="{% static 'img/1.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">Zarejestruj się lub zaloguj jeśli posiadasz już konto.</h1>
+        </div>
+        <div class="flex flex-row-reverse my-6 md:my-12">
+          <img src="{% static 'img/2.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">Po zalogowaniu zostaniesz przekierowany na stronę główną naszej aplikacji, gdzie będziesz miał dostęp do najważniejszych informacji o swoich finansach.</h1>
+        </div>
+        <div class="flex flex-row my-6 md:my-12">
+          <img src="{% static 'img/3.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">Po kliknięciu w ikonę użytkownika (obok twojego imienia i nazwiska) w prawym górnym rogu ekranu rozwinie się menu, wybierz "Profil".</h1>
+        </div>
+        <div class="flex flex-row-reverse my-6 md:my-12">
+          <img src="{% static 'img/4.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">Pojawi się widok ustawienia profilu użytkownika, można tam zmienić metodę oszczędzania oraz walutę.</h1>
+        </div>
+        <div class="flex flex-row my-6 md:my-12">
+          <img src="{% static 'img/5.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">W zakładce statystyki mamy dostęp do szczegółowych wykresów na temat naszych przychodów oraz wydatków.</h1>
+        </div>
+        <div class="flex flex-row-reverse my-6 md:my-12">
+          <img src="{% static 'img/6.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">W zakładce konta mamy dostęp do naszych kont, które możemy tam dodawać, usuwać oraz edytować. Po zarejestrowaniu dostępnę są dwa konta - "Karta" oraz "Gotówka".</h1>
+        </div>
+        <div class="flex flex-row my-6 md:my-12">
+          <img src="{% static 'img/7.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">W zakładce transakcje mamy dostęp do wydatków oraz przychodów, gdzie możemy je dodawać, usuwać i edytować.</h1>
+        </div>
+        <div class="flex flex-row-reverse my-6 md:my-12">
+          <img src="{% static 'img/8.png' %}" class="mx-5 my-auto" alt="" />
+          <h1 class="my-auto text-xl md:text-2xl text-gray-500 w-3/4">W zakładce Przegląd postępów możemy sprawdzić nasze wyniki pod względem wybranej metody oszczędzania.</h1>
+        </div>
+
+      </div>
+    </section>
+
+    
+  {% endblock %}
+    {% block js %}
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        $('.img-container img').each(function(index) {
+            $(this).on("click", function ()  {
+                $('.popup-image').css("display", "block");
+                $('.popup-image img').attr("src", $(this).attr('src'))
+            });
+        });
+
+        $('.popup-image span').click(function () {
+            $('.popup-image').css("display", "none");
+        });
+
+        AOS.init({
+            duration: 1000,
+        });
+    </script>
+    {% endblock %}
+

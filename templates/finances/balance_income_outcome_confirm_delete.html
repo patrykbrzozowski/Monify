@@ -1,0 +1,24 @@
+{% block content %}
+  <div class="pb-3 mt-5">
+    <h1>{{ delete_what }} {{ object.pk }}</h1>
+    
+    <form hx-post="{{ request.path }}" hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' @submit.prevent="showConfirmationModal = false">
+      {% if model == "konto" %}
+      <p>Na pewno usunąć {{ model }} "{{ model_name }}" ?</p>
+      {% elif model == "wydatek" %}
+      <p>Na pewno usunąć "{{ model_name }}" {{ model_date|date:"d/m/y" }} (<span class="text-red-500">- {{ model_value }} {{ user_currency }}</span>) ?</p>
+      {% elif model == "przychód" %}
+      <p>Na pewno usunąć "{{ model_name }}" {{ model_date|date:"d/m/y" }} (<span class="text-green-500">{{ model_value }} {{ user_currency }}</span>) ?</p>
+      {% elif model == "all_data" %}
+      <p>Na pewno usunąć wszystkie dane?</p>
+      {% endif %}
+      {{ form }}
+      <div class="flex justify-end pt-2 my-3">
+        <button type="submit" class="mx-3 modal-close px-4 bg-red-500 hover:bg-red-400 p-2 rounded-lg text-white " value="Confirm">Usuń</button>
+        <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showConfirmationModal = false">
+          Zamknij
+        </button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

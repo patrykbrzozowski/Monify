@@ -1,0 +1,11 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>Zapisz</button>
+</form>
+{% endwith %}
+
+
+

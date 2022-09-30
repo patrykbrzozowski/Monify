@@ -1,0 +1,15 @@
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, 'website/index.html')
+
+def app_info(request):
+    return render(request, 'website/app_info.html')
+
+def info(request):
+    return render(request, 'website/info.html')
+
+def methods_info(request):
+    return render(request, 'website/methods_info.html')
+    
