@@ -18,7 +18,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <!-- <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link
       rel="stylesheet"
@@ -26,19 +25,22 @@
     />
 
     <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.0.6/medium-zoom.min.js" integrity="sha512-N9IJRoc3LaP3NDoiGkcPa4gG94kapGpaA5Zq9/Dr04uf5TbLFU5q0o8AbRhLKUUlp8QFS2u7S+Yti0U7QtuZvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-    <title>Monify - kontroluj mądrze swoje wydatki</title>
+    <!-- favicon-16x16.png - The classic favicon, displayed in the tabs. -->
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}" sizes="16x16">
+    <!-- favicon-32x32.png - For Safari on Mac OS. -->
+    <link rel="icon" type="image/png" href="{% static 'img/icon32.png' %}" sizes="32x32">
+    <title>Monify App - kontroluj mądrze swoje wydatki</title>
   </head>
   <body  x-data="{openMobileMenu: false}">
     <!-- Navbar -->
     {% url 'website:index' as index %}
     {% url 'website:app_info' as app_info %}
-    <nav class="container mx-auto px-6 py-2 shadow-xl sticky top-0 bg-white">
+    <nav class="px-6 py-2 shadow-xl sticky top-0 bg-white">
       <div class="flex items-center justify-between">
         <!-- Logo -->
         <div class="pt-1">
             <a href="{{ index }}">
-                <img src="{% static 'img/logo.png' %}" class="ml-6 w-16 h-14" alt="" />
+                <img src="{% static 'img/purplelogo-mini.png' %}" class="ml-6 w-12 h-12" alt="" />
             </a>
         </div>
         <!-- Button -->
@@ -50,7 +52,6 @@
         <div class="hidden md:flex space-x-6 mx-5 text-gray-400">
           <a href="{{ index }}" class="hover:text-gray-600 hover:underline hover:underline-offset-8 my-auto{% if page_path == index %} text-gray-600 underline underline-offset-8{% endif %}">Strona główna</a>
           <a href="{{ app_info }}" class="hover:text-gray-600 hover:underline hover:underline-offset-8 my-auto{% if page_path == app_info %} text-gray-600 underline underline-offset-8{% endif %}">Jak działa</a>
-          <!-- <a href="#" class="hover:text-gray-400 my-auto">O mnie</a> -->
           <a
             href="{% url 'accounts:login' %}"
             class="hidden md:block p-3 px-6 pt-2 text-white bg-purple-400 rounded-full hover:bg-purple-500 baseline text-sm"
@@ -59,14 +60,11 @@
         </div>
       </div>
 
-      
-
       <!-- Mobile Menu -->
       <div class="md:hidden" x-show="openMobileMenu">
         <div class="absolute flex flex-col items-center self-end py-8 mt-0 space-y-6 font-bold bg-white sm:w-full left-0 right-0 drop-shadow-md text-gray-600">
             <a href="{{ index }}" class="hover:text-gray-400 my-auto">Strona główna</a>
             <a href="{{ app_info }}" class="hover:text-gray-400 my-auto">Jak działa</a>
-            <!-- <a href="#" class="hover:text-gray-400 my-auto">O mnie</a> -->
             <a
               href="{% url 'accounts:login' %}"
               class="p-3 px-6 pt-2 text-white bg-purple-400 rounded-full hover:bg-purple-500 baseline text-sm"
@@ -78,28 +76,12 @@
     {% block content %}
     {% endblock %}
     
-    
-
     <footer class="bg-purple-400 flex items-center justify-between p-5">
       <span class="text-sm text-white text-center mx-auto"
-        >© {% if today_year == 2022 %}2022 {% else %}2022-{{ today_year }} {% endif %} <a href="" class="hover:underline">Monify™</a>. All Rights
+        >© {% if today_year == 2022 %}2022 {% else %}2022-{{ today_year }} {% endif %} <a href="" class="hover:underline">Monify App™</a>. All Rights
         Reserved.
       </span>
-      <!-- <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
-            <li>
-                <a href="#" class="mr-4 hover:underline md:mr-6 ">About</a>
-            </li>
-            <li>
-                <a href="#" class="mr-4 hover:underline md:mr-6">Privacy Policy</a>
-            </li>
-            <li>
-                <a href="#" class="mr-4 hover:underline md:mr-6">Licensing</a>
-            </li>
-            <li>
-                <a href="#" class="hover:underline">Contact</a>
-            </li>
-        </ul> -->
-      </footer>
+    </footer>
       {% block js %}
       {% endblock %}
   </body>

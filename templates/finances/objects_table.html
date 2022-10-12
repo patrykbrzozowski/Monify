@@ -1,82 +1,64 @@
 {% if data_exist == True %}
-<table class="w-full text-sm text-left text-gray-500 rounded-lg">
+  <table class="w-full text-sm text-left text-gray-500 rounded-lg">
     <tbody>
-{% for object in object_list %}
-    <!-- <tr class="">
-        <td class="text-xl text-gray-700"><a href=""><span>{{ object.name }} (Data utworzenia: {{ object.created_at |date:"d/m/y" }})</span> <span class="mr-5">{{ object.value }}</span> <span>{{ object.get_type_display }}</span></a></td>
-    </tr> -->
-    {% if list_what == "Balance" %}
-    <tr class="border-b  odd:bg-white even:bg-gray-200 hover:cursor-pointer hover:bg-gray-300" @click="showModal = true; scroll_to_form()" hx-get="{% url 'finances:balance_update' object.pk %}" hx-target="#dialog">
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900">
-            {{ object.name }}
-        </th>
-        <td class="md:px-6 md:py-4 hidden md:block">
-            (Data utworzenia: {{ object.date |date:"d/m/y" }})
-        </td>
-        <td class="px-6 py-4 font-bold {% if object.value < 0 %}text-red-500{% endif %}">
-            {{ object.value }} {{ user_currency }}
-        </td>
-        <td class="px-6 py-4 hidden md:block">
-            {{ object.get_type_display }}
-        </td>
-        <!-- <td class="px-6 py-4 text-right">
-        </td> -->
-        <!-- <td class="text-xl text-gray-700 px-6 py-4"><a href=""><span>{{ object.name }} (Data utworzenia: {{ object.created_at |date:"d/m/y" }})</span> <span class="mr-5">{{ object.value }}</span> <span>{{ object.get_type_display }}</span></a></td> -->
-    </tr>
+      {% for object in object_list %}
+        {% if list_what == "Balance" %}
+          <tr class="border-b  odd:bg-white even:bg-gray-200 hover:cursor-pointer hover:bg-gray-300" @click="showModal = true; scroll_to_form()" hx-get="{% url 'finances:balance_update' object.pk %}" hx-target="#dialog">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900">
+                  {{ object.name }}
+              </th>
+              <td class="md:px-6 md:py-4 hidden md:block">
+                  (Data utworzenia: {{ object.date |date:"d/m/y" }})
+              </td>
+              <td class="px-6 py-4 font-bold {% if object.value < 0 %}text-red-500{% endif %}">
+                  {{ object.value }} {{ user_currency }}
+              </td>
+              <td class="px-6 py-4 hidden md:block">
+                  {{ object.get_type_display }}
+              </td>
+          </tr>
 
-    {% else %}
-    <tr class="border-b  odd:bg-white even:bg-gray-200 hover:cursor-pointer hover:bg-gray-300" @click="showModal = true; scroll_to_form()" 
-      {% if list_what == "Outcome" %}
-      hx-get="{% url 'finances:outcome_update' object.pk %}" 
-      {% elif list_what == "Income" %}
-      hx-get="{% url 'finances:income_update' object.pk %}" 
-      {% endif %}
-      hx-target="#dialog">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900">
-        <p>
-          {{ object.get_type_display }} 
-
-        </p>
-        <p class="text-gray-500 font-normal">
-          <i class="fa-solid fa-credit-card"></i> {{object.balance.name}}
-        </p>
-      </th>
-      
-      <td class="md:px-6 md:py-4 hidden md:block">
-          {{ object.date |date:"d/m/y" }}
-      </td>
-      {% if list_what == "Outcome" %}
-      <td class="px-6 py-4 font-bold text-red-500">
-        - {{ object.value }} {{ user_currency }}
-      </td>
-      {% elif list_what == "Income" %}
-      <td class="px-6 py-4 font-bold text-green-500">
-        {{ object.value }} {{ user_currency }}
-      </td>
-      {% endif %}
-      <td class="px-6 py-4">
-          {{ object.comment }}
-      </td>
-      <!-- <td class="md:px-6 md:py-4">
-        (Data utworzenia: {{ object.date |date:"d/m/y" }})
-      </td> -->
-      <!-- <td class="px-6 py-4 text-right">
-      </td> -->
-      <!-- <td class="text-xl text-gray-700 px-6 py-4"><a href=""><span>{{ object.name }} (Data utworzenia: {{ object.created_at |date:"d/m/y" }})</span> <span class="mr-5">{{ object.value }}</span> <span>{{ object.get_type_display }}</span></a></td> -->
-    </tr>
-    
-    {% endif %}
-    
-    
-{% endfor %}
-
-</tbody>
-</table>
+        {% else %}
+          <tr class="border-b  odd:bg-white even:bg-gray-200 hover:cursor-pointer hover:bg-gray-300" @click="showModal = true; scroll_to_form()" 
+            {% if list_what == "Outcome" %}
+            hx-get="{% url 'finances:outcome_update' object.pk %}" 
+            {% elif list_what == "Income" %}
+            hx-get="{% url 'finances:income_update' object.pk %}" 
+            {% endif %}
+            hx-target="#dialog">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900">
+              <p>
+                {{ object.get_type_display }} 
+              </p>
+              <p class="text-gray-500 font-normal">
+                <i class="fa-solid fa-credit-card"></i> {{object.balance.name}}
+              </p>
+            </th>
+            
+            <td class="md:px-6 md:py-4 hidden md:block">
+                {{ object.date |date:"d/m/y" }}
+            </td>
+            {% if list_what == "Outcome" %}
+              <td class="px-6 py-4 font-bold text-red-500">
+                - {{ object.value }} {{ user_currency }}
+              </td>
+            {% elif list_what == "Income" %}
+              <td class="px-6 py-4 font-bold text-green-500">
+                {{ object.value }} {{ user_currency }}
+              </td>
+            {% endif %}
+            <td class="px-6 py-4">
+                {{ object.comment }}
+            </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
 
 
 {% if is_paginated %}
 <div class="w-full md:w-1/2 mx-auto py-6 flex justify-between items-center">
-  <!-- <ul class="pagination"> -->
     {% if page_obj.has_previous %}
     <!--First Button-->
     <button
@@ -125,7 +107,6 @@
     <polyline points="15 18 9 12 15 6"></polyline>
   </svg>
 </button>
-      <!-- <li><button hx-get="{% url 'finances:balance_list_get' %}?page={{ page_obj.previous_page_number }}" hx-target="#loadthis">&laquo;</button></li> -->
     {% else %}
     <button
     class="disabled cursor-not-allowed text-gray-600"
@@ -165,7 +146,6 @@
 </button>
     {% endif %}
     {% for i in paginator.page_range|default_if_none:page_obj.paginator.get_elided_page_range %}
-        <!-- <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li> -->
         {% if page_obj.number == i %}
         <button
                 class="px-3 py-2 rounded{% if page_obj.number == i %} bg-purple-600 text-white font-bold{% endif %}"
@@ -203,7 +183,6 @@
               </button>
               {% endif %}
       {% endif %}
-        <!-- <li><button hx-get="{% url 'finances:balance_list_get' %}?page={{ i }}" hx-target="#loadthis">{{ i }}</button></li> -->
     {% endfor %}
     {% if page_obj.has_next %}
     <button
@@ -253,7 +232,6 @@
       <line x1="19" y1="5" x2="19" y2="19"></line>
     </svg>
   </button>
-      <!-- <li><button hx-get="{% url 'finances:balance_list_get' %}?page={{ page_obj.next_page_number }}" hx-target="#loadthis">&raquo;</button></li> -->
     {% else %}
     <button
     class="disabled cursor-not-allowed text-gray-600"
@@ -293,8 +271,6 @@
   </svg>
 </button>
     {% endif %}
-    
-  <!-- </ul> -->
 </div>
 {% endif %}
 {% else %}
@@ -303,4 +279,3 @@
   <p class="text-2xl ml-4">Nie wprowadzono jeszcze żadnych danych.</p>
 </div>
 {% endif %}
-

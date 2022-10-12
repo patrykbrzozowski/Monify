@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
-
 {% block content %}
 <div class="container"
     x-data="alpineInstance()"
@@ -10,26 +8,7 @@
             .then(response => response.json())
             .then(data => summary_data = data)"
   >
-    <h1 class="text-3xl my-7 mx-10"><span id="greeting"></span>, {{ user.first_name }}</h1>
-    <!-- <div
-      class="bg-purple-600 text-white shadow-xl border border-purple-700 my-10 mx-10 rounded-xl md:w-11/12"
-    >
-      <div class="p-10 mx-auto my-auto lg:grid lg:grid-cols-2 gap-1">
-        <div class="">
-          <h1 class="mx-auto mb-6 text-4xl">Aktualny stan konta:</h1>
-          <p class="mx-auto text-3xl mb-2"
-            x-text="summary_data.total_balance + ' zł'">0000,00 zł</p>
-          <p class="mx-auto text-xs">Data utworzenia konta: 20/05/2022</p>
-          <p class="mx-auto text-md">Wszystkie konta</p>
-        </div>
-        <div class="hidden 2xl:block">
-          <i
-            class="ml-80 fa-solid fa-credit-card text-9xl text-purple-700"
-          ></i>
-        </div>
-      </div>
-    </div> -->
-
+    <h1 class="text-3xl my-7 mx-10 font-bold"><span id="greeting"></span>, {{ user.first_name }}</h1>
     <div class="text-gray-600 grid grid-rows-1 my-14">
       <div class="grid md:grid-cols-4 gap-8 md:mx-5">
         <div
@@ -40,8 +19,6 @@
             <h1 class="mx-auto mb-6 text-4xl">Aktualny stan konta</h1>
             <p class="mx-auto text-3xl mb-2"
               x-text="summary_data.total_balance + ' ' + summary_data.user_currency">0000,00 zł</p>
-            <!-- <p class="mx-auto text-xs">Data utworzenia konta: 20/05/2022</p> -->
-            <!-- <p class="mx-auto text-md">Wszystkie konta</p> -->
           </div>
           <div class="hidden 2xl:block">
             <i
@@ -58,8 +35,6 @@
             <h1 class="mx-auto mb-6 text-4xl">Twoje oszczędności</h1>
             <p class="mx-auto text-3xl mb-2"
               x-text="summary_data.total_savings + ' ' + summary_data.user_currency">0000,00 zł</p>
-            <!-- <p class="mx-auto text-xs">Data utworzenia konta: 20/05/2022</p> -->
-            <!-- <p class="mx-auto text-md">Wszystkie konta oszczędnościowe</p> -->
           </div>
           <div class="hidden 2xl:block">
             <i
@@ -86,22 +61,17 @@
           <h1 class="text-lg font-bold">Wydatki</h1>
           <p class="text-xs mb-3" x-text="'Od początku miesiąca ' + '(' + summary_data.actual_month + ')'"></p>
           <p class="text-lg text-red-500" x-text="'- ' + summary_data.total_outcome + ' ' + summary_data.user_currency"></p>
-          <!-- <p class="text-lg text-red-500">- 7000 zł</p> -->
         </div>
         <div
           class="mx-auto border border-gray-700 border-b-purple-700 border-b-4 shadow-lg p-8 rounded-lg"
         >
           <h1 class="text-lg font-bold">Przychody (dzisiaj)</h1>
-          <!-- <p class="text-xs mb-3" x-text="'Średnio dziennie na podstawie bieżącego miesiąca ' + '(' + summary_data.actual_month + ')'"></p> -->
-          <!-- <p class="text-xs mb-3">Średnie dzienne przychody w tym miesiącu</p> -->
           <p class="text-lg text-green-500 mt-7" x-text="summary_data.today_total_income + ' ' + summary_data.user_currency"></p>
-          <!-- <p class="text-lg">200 zł</p> -->
         </div>
         <div
           class="mx-auto border border-gray-700 border-b-purple-700 border-b-4 shadow-lg p-8 rounded-lg"
         >
           <h1 class="text-lg font-bold">Wydatki (dzisiaj)</h1>
-          <!-- <p class="text-xs mb-3">Średnie dzienne wydatki w tym miesiącu</p> -->
           <p class="text-lg text-red-500 mt-7" x-text="'- ' + summary_data.today_total_outcome + ' ' + summary_data.user_currency"></p>
         </div>
       </div>
@@ -112,7 +82,6 @@
           class="col-span-2 mx-8 border border-gray-700 border-b-purple-700 border-b-4 shadow-lg p-8 rounded-lg"
         >
           <h1 class="text-lg font-bold">Ostatnie przychody:</h1>
-          <!-- <p class="text-xs mb-3" x-text="'Od początku miesiąca ' + '(' + summary_data.actual_month + ')'"></p> -->
           <template x-for="income in summary_data.last_five_incomes" :key="income.id">
             <div class="grid grid-cols-3 my-3 gap-4">
               <p x-text="income.type"></p>
@@ -125,15 +94,11 @@
           class="col-span-2 mx-8 border border-gray-700 border-b-purple-700 border-b-4 shadow-lg p-8 rounded-lg"
         >
           <h1 class="text-lg font-bold">Ostatnie wydatki:</h1>
-          <!-- <p class="text-xs mb-3" x-text="'Od początku miesiąca ' + '(' + summary_data.actual_month + ')'"></p> -->
           <template x-for="outcome in summary_data.last_five_outcomes" :key="outcome.id">
             <div class="grid grid-cols-3 my-3 gap-4">
               <p x-text="outcome.type"></p>
               <p class="text-gray-400" x-text="outcome.date">20.12.222</p>
               <p class="text-red-500" x-text="'- ' + outcome.value + ' ' + summary_data.user_currency">- 60 zł</p>
-              <!-- <p>Netflix</p>
-              <p>20.12.222</p>
-              <p>60 zł</p> -->
             </div>
           </template>
         </div>
@@ -146,75 +111,19 @@
           class="mx-8 border border-gray-700 border-b-purple-700 border-b-4 shadow-lg p-8 rounded-lg"
         >
           <h1 class="text-lg font-bold">Wykres przychody kontra wydatki</h1>
-          <!-- <p class="text-xs mb-3" x-text="'Od początku miesiąca ' + '(' + summary_data.actual_month + ')'"></p> -->
           <div class="card-body flex">
             <div class="chart-area w-full">
-                <canvas class="" id="year_chart_canvas"></canvas>
+                <canvas id="year_chart_canvas"></canvas>
             </div>
         </div>
         </div>
       </div>
     </div>
 
-   
-
-
-    <!-- <div class="row d-none d-md-block" id="year_chart">
-      <div class="col-12">
-          <div class="card shadow mb-4">
-              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Current Balance over Year</h6>
-                  <div class="dropdown no-arrow">
-                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                      </a>
-                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                           aria-labelledby="dropdownMenuLink">
-                          <div class="dropdown-header">Dropdown Header:</div>
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Something else here</a>
-                      </div>
-                  </div>
-              </div>
-              <div class="card-body">
-                  <div class="chart-area">
-                      <canvas id="year_chart_canvas"></canvas>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div> -->
   </div>
 {% endblock %}
 
 {% block js %}
-
-<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
-        integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'js/common_charts.js' %}"></script>
-<script src="{% static 'js/year_overview_charts.js' %}"></script>
-
-<script>
-    const $greeting = $('#greeting');
-    const hour = new Date().getHours();
-
-    if (hour < 18) $greeting.text('Dzień dobry');
-    else $greeting.text('Dobry wieczór');
-    
-  function alpineInstance() {
-    return {
-      title: 'Alpine.js',
-      intro:
-        'Implement a simple <code class="text-md text-pink-600">fetch()</code> request to render a list of items using Alpine.js :)',
-      summary_data: []
-    };
-}
-</script>
-
-
+<script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

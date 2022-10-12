@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 # Balance model
 class Balance(models.Model):
     
@@ -25,7 +24,6 @@ class Balance(models.Model):
         verbose_name_plural = 'balances'
         ordering = ['-date']
         
-
 # Outcome model
 class Outcome(models.Model):
     class OTypes(models.IntegerChoices):
@@ -102,7 +100,6 @@ class Outcome(models.Model):
         constraints = [
             models.CheckConstraint(check=models.Q(value__gte='0'), name='outcome_value_non_negative'),
         ]
-
 
 # Income model
 class Income(models.Model):

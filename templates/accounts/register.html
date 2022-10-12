@@ -16,14 +16,18 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <title>Document</title>
+    <!-- favicon-16x16.png - The classic favicon, displayed in the tabs. -->
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}" sizes="16x16">
+    <!-- favicon-32x32.png - For Safari on Mac OS. -->
+    <link rel="icon" type="image/png" href="{% static 'img/icon32.png' %}" sizes="32x32">
+    <title>Monify App - kontroluj mądrze swoje wydatki</title>
 </head>
 <body class="bg-purple-600 min-h-screen pt-5 pb-5 px-2 md:px-0">
     <div>
         <a href="{% url 'website:index' %}" class="text-xl ml-5 text-white"><i class="fa-solid fa-circle-chevron-left"></i> <span class="hidden md:inline-block">Powrót</span></a>
     </div>
     <div class="mx-auto">
-        <img src="{% static 'img/loogowhite.png' %}" class="mx-auto w-28 h-28" alt="" />
+        <img src="{% static 'img/whitelogo.png' %}" class="mx-auto w-28 h-28" alt="" />
     </div>
     <main class="bg-white max-w-lg mx-auto p-8 md:p-12 my-8 rounded-lg shadow-2xl">
         <section class="">

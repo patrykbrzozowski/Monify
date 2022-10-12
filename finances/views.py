@@ -1,32 +1,26 @@
-from base64 import encode
 import calendar
-from decimal import Decimal
-# from distutils.log import Log
-# from dateutil import rrule
-from dateutil import relativedelta
-from datetime import date, timedelta, datetime
-from django.utils.formats import date_format
-from django.utils import translation
 import json
 import io
 import csv
 import locale
+from decimal import Decimal
+from dateutil import relativedelta
+from datetime import date, timedelta, datetime
+from django.utils.formats import date_format
+from django.utils import translation
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont   
-import time
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, Q, Count
+from django.db.models import Sum, Q
 from django.db.models.functions import TruncMonth, ExtractMonth, ExtractYear
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileResponse
-# from django.urls import reverse_lazy, reverse
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from .forms import BalanceForm, OutcomeForm, IncomeForm
@@ -34,11 +28,13 @@ from .models import Balance, Outcome, Income
 from accounts.models import Account
 
 # Balance Views
+
+# Balance List View
 class BalanceListView(LoginRequiredMixin, ListView):
     login_url = 'accounts:login'
     model = Balance
     paginate_by = 10
-    template_name = 'finances/balance_list.html'
+    template_name = 'finances/objects_table.html'
 
     def get_queryset(self):
         user = self.request.user
@@ -52,32 +48,7 @@ class BalanceListView(LoginRequiredMixin, ListView):
         context['list_what'] = 'Balance'
         return context
 
-    # def get(self, request):
-    #     user = request.user
-    #     balances = Balance.objects.filter()
-    #     data = []
-    #     for balance in balances:
-    #         data.append({
-    #             'id': balance.id,
-    #             'name': balance.name,
-    #             'value': balance.value,
-    #             'created_at': balance.created_at.date().strftime("%d/%m/%y"),
-    #             'type': balance.type
-    #         })
-    #     return JsonResponse(data, safe=False)
-
-# def balance_list_get(request):
-#     return render(request, 'finances/balance_list.html', {'balances': Balance.objects.all(),})
-
-class BalanceDetailView(DetailView):
-    model = Balance
-    template_name = 'finances/balance_income_outcome_detail.html'
-    extra_context = {'detail_what': 'Balance'}
-
-    def get_queryset(self):
-        user = self.request.user
-        return Balance.objects.filter(user=user)
-
+# Balance Create View
 class BalanceCreateView(LoginRequiredMixin, CreateView):
     login_url = 'accounts:login'
     model = Balance
@@ -93,12 +64,11 @@ class BalanceCreateView(LoginRequiredMixin, CreateView):
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "movieListChanged": None,
-                        "showMessage": f"{self.object.name} added."
+                        "objectListChanged": None
                     })
                 })
 
-
+# Balance Update View
 class BalanceUpdateView(LoginRequiredMixin, UpdateView):
     login_url = 'accounts:login'
     model = Balance
@@ -114,15 +84,13 @@ class BalanceUpdateView(LoginRequiredMixin, UpdateView):
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "movieListChanged": None,
-                        "showMessage": f"{self.object.name} added."
+                        "objectListChanged": None
                     })
                 })
 
-
 @login_required(login_url='accounts:login')
 def balance_list(request):
-    return render(request, 'finances/balance_income_outcome_list.html')
+    return render(request, 'finances/balances.html')
 
 @login_required(login_url='accounts:login')
 def delete_balance(request, part_id=None):
@@ -133,44 +101,19 @@ def delete_balance(request, part_id=None):
                     status=204,
                     headers={
                         'HX-Trigger': json.dumps({
-                            "movieListChanged": None,
+                            "objectListChanged": None,
                         })
                     })
     return render(request, 'finances/balance_income_outcome_confirm_delete.html', context={'model':'konto', 'model_name':balance[0].name})
 
-
-# def balances_list(request):
-#     balances = [{
-#         'id': balance.id,
-#         'name': balance.name,
-#         'created_at': balance.created_at,
-#         'value': balance.value
-#     } for balance in Balance.objects.filter(user=request.user)]
-
-#     return JsonResponse(status=200, data=balances, safe=False)
-
-# def create_balance(request):
-#     user = request.user
-#     name = request.POST.get('user')
-#     value = request.POST.get('value')
-#     type = request.POST.get('type')
-#     date = request.POST.get('date')
-#     comment = request.POST.get('comment')
-#     print(name)
-#     if not name:
-#         return JsonResponse(status=400, data={'error': 'title is required'})
-#     task = Balance.objects.create(name=name, user=user, value=value, type=type, date=date, comment=comment)
-#     return JsonResponse(status=201, data={'name': task.name,
-#                                           'id': task.id}, safe=False)
-
-
 # Outcome Views
 
+# Outcome List View
 class OutcomeListView(LoginRequiredMixin, ListView):
     login_url = 'accounts:login'
     model = Outcome
-    paginate_by = 15
-    template_name = 'finances/balance_list.html'
+    paginate_by = 10
+    template_name = 'finances/objects_table.html'
 
     def get_queryset(self):
         user = self.request.user
@@ -184,6 +127,7 @@ class OutcomeListView(LoginRequiredMixin, ListView):
         context['list_what'] = 'Outcome'
         return context
 
+# Outcome Create View
 class OutcomeCreateView(LoginRequiredMixin, CreateView):
     login_url = 'accounts:login'
     model = Outcome
@@ -195,7 +139,6 @@ class OutcomeCreateView(LoginRequiredMixin, CreateView):
         modelform = super().get_form_class()
         modelform.base_fields['balance'].limit_choices_to = {'user': self.request.user}
         return modelform
-
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -209,13 +152,11 @@ class OutcomeCreateView(LoginRequiredMixin, CreateView):
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "movieListChanged": None,
-                        "showMessage": f"{self.object.comment} added."
+                        "objectListChanged": None
                     })
                 })
 
-
-
+# Outcome Update View
 class OutcomeUpdateView(LoginRequiredMixin, UpdateView):
     login_url = 'accounts:login'
     model = Outcome
@@ -223,25 +164,15 @@ class OutcomeUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'finances/balance_income_outcome_form.html'
     extra_context = {'header': 'Edytuj wydatek'}
 
-    # def clean_value(self):
-    #     data = Outcome.objects.filter(id=self.id)
-    #     print(data)
-    #     return data
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         old_outcome_value = Outcome.objects.filter(id=self.object.id).aggregate(total=Sum('value'))['total']
         old_outcome_balance = Outcome.objects.filter(id=self.object.id).values('balance_id')[0]['balance_id']
-        print(old_outcome_balance)
-        # print(old_outcome_value)
         self.object.save()
-        # print(self.object.value)
-        # print(self.object.balance.id)
         balance = Balance.objects.filter(id=self.object.balance.id)
         balance_value = balance.aggregate(total=Sum('value'))['total']
         value_to_substract = self.object.value - old_outcome_value
-        print(value_to_substract)
 
         if old_outcome_balance != self.object.balance.id:
             old_balance = Balance.objects.filter(id = old_outcome_balance)
@@ -250,16 +181,13 @@ class OutcomeUpdateView(LoginRequiredMixin, UpdateView):
             old_balance.update(value = old_balance_value)
             value_to_substract = self.object.value
 
-        print(value_to_substract)
         balance_value -= value_to_substract
-        # print(value_to_substract)
         balance.update(value = balance_value)
         return HttpResponse(
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "movieListChanged": None,
-                        "showMessage": f"{self.object.comment} added."
+                        "objectListChanged": None
                     })
                 })
 
@@ -278,22 +206,20 @@ def delete_outcome(request, part_id=None):
                     status=204,
                     headers={
                         'HX-Trigger': json.dumps({
-                            "movieListChanged": None,
+                            "objectListChanged": None,
                         })
                     })
     return render(request, 'finances/balance_income_outcome_confirm_delete.html', context={'model': 'wydatek','model_name':outcome[0].get_type_display, 'model_value':outcome[0].value, 'model_date': outcome[0].date})
 
 def outcome_list(request):
-    return render(request, 'finances/outcome_list.html', context={'list_what': 'Wydatki'})
-
+    return render(request, 'finances/incomes_outcomes.html', context={'list_what': 'Wydatki'})
 
 # Income Views
-
 class IncomeListView(LoginRequiredMixin, ListView):
     login_url = 'accounts:login'
     model = Income
-    paginate_by = 15
-    template_name = 'finances/balance_list.html'
+    paginate_by = 10
+    template_name = 'finances/objects_table.html'
 
     def get_queryset(self):
         user = self.request.user
@@ -319,7 +245,6 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
         modelform.base_fields['balance'].limit_choices_to = {'user': self.request.user}
         return modelform
 
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
@@ -332,21 +257,9 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "movieListChanged": None,
-                        "showMessage": f"{self.object.comment} added."
+                        "objectListChanged": None,
                     })
                 })
-
-    # def create_valid_form(request):
-    #     value = request.POST.get('value')
-    #     if value < 0:
-    #         return HttpResponse(
-    #                 "no")
-    #     else:
-    #         return HttpResponse(
-    #                 "yes")
-
-
 
 class IncomeUpdateView(LoginRequiredMixin, UpdateView):
     login_url = 'accounts:login'
@@ -354,26 +267,16 @@ class IncomeUpdateView(LoginRequiredMixin, UpdateView):
     form_class = IncomeForm
     template_name = 'finances/balance_income_outcome_form.html'
     extra_context = {'header': 'Edytuj przychód'}
-
-    # def clean_value(self):
-    #     data = Outcome.objects.filter(id=self.id)
-    #     print(data)
-    #     return data
-
+    
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         old_income_value = Income.objects.filter(id=self.object.id).aggregate(total=Sum('value'))['total']
         old_income_balance = Income.objects.filter(id=self.object.id).values('balance_id')[0]['balance_id']
-        print(old_income_balance)
-        # print(old_income_value)
         self.object.save()
-        # print(self.object.value)
-        # print(self.object.balance.id)
         balance = Balance.objects.filter(id=self.object.balance.id)
         balance_value = balance.aggregate(total=Sum('value'))['total']
         value_to_substract = self.object.value - old_income_value
-        print(value_to_substract)
 
         if old_income_balance != self.object.balance.id:
             old_balance = Balance.objects.filter(id = old_income_balance)
@@ -382,16 +285,13 @@ class IncomeUpdateView(LoginRequiredMixin, UpdateView):
             old_balance.update(value = old_balance_value)
             value_to_substract = self.object.value
 
-        print(value_to_substract)
         balance_value += value_to_substract
-        # print(value_to_substract)
         balance.update(value = balance_value)
         return HttpResponse(
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "movieListChanged": None,
-                        "showMessage": f"{self.object.comment} added."
+                        "objectListChanged": None,
                     })
                 })
 
@@ -410,15 +310,14 @@ def delete_income(request, part_id=None):
                     status=204,
                     headers={
                         'HX-Trigger': json.dumps({
-                            "movieListChanged": None,
+                            "objectListChanged": None,
                         })
                     })
     return render(request, 'finances/balance_income_outcome_confirm_delete.html', context={'model': 'przychód','model_name':income[0].get_type_display, 'model_value':income[0].value, 'model_date': income[0].date})
 
 @login_required(login_url='accounts:login')
 def income_list(request):
-    return render(request, 'finances/outcome_list.html', context={'list_what': 'Przychody'})
-
+    return render(request, 'finances/incomes_outcomes.html', context={'list_what': 'Przychody'})
 
 def get_last_date_of_month(year, month):
     """Return the last date of the month.
@@ -434,26 +333,14 @@ def get_last_date_of_month(year, month):
     return last_date.strftime("%Y-%m-%d")
 
 
-
-
-
 def get_summary_data(request):
     today = date.today()
-    number_of_days_in_actual_month = int(get_last_date_of_month(today.year, today.month)[-2:])
-    # print(number_of_days_in_actual_month + 2)
-    # last_balance = Balance.objects.filter(user=request.user, type=1).order_by('-date').first()
-    # if not last_balance:
-    #     return JsonResponse({'error': 'No current balance has been recorded. Please add at least one current balance record.'})
-        
     start_month = date.today().replace(day=1)
     end_month = get_last_date_of_month(today.year, today.month)
     
-    last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
-    prev_start_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
-    # print(previous_start_month)
-    # print(last_day_of_prev_month)
+    # last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
+    # prev_start_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
 
-    # Initialise totals with sums of non repetitive incomes and outcomes
     total_balance = Balance.objects\
         .filter(user=request.user, type=1).aggregate(total=Sum('value'))['total']
     total_balance = 0 if total_balance is None else total_balance
@@ -476,68 +363,35 @@ def get_summary_data(request):
         .filter(user=request.user, date=today)\
         .aggregate(total=Sum('value'))['total']
     today_total_outcome = 0 if today_total_outcome is None else today_total_outcome
-    average_incomes_per_day = round(total_income/number_of_days_in_actual_month, 2)
-    average_outcomes_per_day = round(total_outcome/number_of_days_in_actual_month, 2)
+    # average_incomes_per_day = round(total_income/number_of_days_in_actual_month, 2)
+    # average_outcomes_per_day = round(total_outcome/number_of_days_in_actual_month, 2)
 
     # Savings
-    total_saving_balance = Balance.objects\
-        .filter(user=request.user, type=2).aggregate(total=Sum('value'))['total']
-    total_saving_balance = 0 if total_saving_balance is None else total_saving_balance
-    last_total_balance = Balance.objects\
-        .filter(user=request.user, type=2, date__gte=prev_start_month, date__lte=last_day_of_prev_month).aggregate(total=Sum('value'))['total']
-    last_total_balance = 0 if last_total_balance is None else last_total_balance
-    savings = total_saving_balance - last_total_balance
+    # total_saving_balance = Balance.objects\
+    #     .filter(user=request.user, type=2).aggregate(total=Sum('value'))['total']
+    # total_saving_balance = 0 if total_saving_balance is None else total_saving_balance
+    # last_total_balance = Balance.objects\
+    #     .filter(user=request.user, type=2, date__gte=prev_start_month, date__lte=last_day_of_prev_month).aggregate(total=Sum('value'))['total']
+    # last_total_balance = 0 if last_total_balance is None else last_total_balance
+    # savings = total_saving_balance - last_total_balance
 
     # Last 5 outcomes
     last_five_outcomes_model = Outcome.objects.filter(user=request.user)[:5]
     last_five_outcomes = []
     for outcome in last_five_outcomes_model:
-        last_five_outcomes.append({'id': outcome.id, 'type': outcome.get_type_display(), 'date': outcome.date, 'value': str(outcome.value).replace('.', ',')})
-    print(last_five_outcomes)
+        last_five_outcomes.append({'id': outcome.id, 'type': outcome.get_type_display(), 'date': outcome.date.strftime("%d-%m-%Y"), 'value': str(outcome.value).replace('.', ',')})
 
     # Last 5 incomes
     last_five_incomes_model = Income.objects.filter(user=request.user)[:5]
     last_five_incomes = []
     for income in last_five_incomes_model:
-        last_five_incomes.append({'id': income.id, 'type': income.get_type_display(), 'date': income.date, 'value': str(income.value).replace('.', ',')})
-    print(last_five_incomes)
+        last_five_incomes.append({'id': income.id, 'type': income.get_type_display(), 'date': income.date.strftime("%d-%m-%Y"), 'value': str(income.value).replace('.', ',')})
 
 
     translation.activate('pl')
     actual_month = date_format(today, 'F')
 
-    # end_date = get_last_date_of_month(today.year, today.month)
-
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
-
-    print("Actual month")
-    print(get_last_date_of_month(today.year, today.month)[-2:])
-    
-    
-    # total_outcome = Outcome.objects\
-    #     .filter(user=request.user, date__gte=last_balance.date, date__lte=today, repetitive=False)\
-    #     .aggregate(total=Sum('value'))['total']
-    # total_outcome = 0 if total_outcome is None else total_outcome
-
-    # incomes = Income.objects.filter(user=request.user, date__gte=last_balance.date, repetitive=False)
-    # rep_incomes = Income.objects.filter(user=request.user, repetitive=True)
-    # outcomes = Outcome.objects.filter(user=request.user, date__gte=last_balance.date, repetitive=False)
-    # rep_outcomes = Outcome.objects.filter(user=request.user, repetitive=True)
-
-    # Updated total with repetitive
-    # for income in Income.objects.filter(user=request.user, repetitive=True):
-    #     total_income += calculate_repetitive_total(income, last_balance.date, today)
-    # for outcome in Outcome.objects.filter(user=request.user, repetitive=True):
-    #     total_outcome += calculate_repetitive_total(outcome, last_balance.date, today)
-
-    # context = {
-    #     'last_balance': last_balance,
-    #     'estimated_balance': last_balance.value + total_income - total_outcome,
-    #     'total_income': total_income,
-    #     'total_outcome': total_outcome
-    # }
-
-    # return render(request, 'my_finances/current_finances.html', context=context)
 
     return JsonResponse({
         'total_balance': str(total_balance).replace('.', ','),
@@ -547,117 +401,25 @@ def get_summary_data(request):
         'today_total_income': str(today_total_income).replace('.', ','),
         'today_total_outcome': str(today_total_outcome).replace('.', ','),
         'actual_month': actual_month,
-        'savings': savings,
+        # 'savings': savings,
         'last_five_outcomes': last_five_outcomes,
         'last_five_incomes': last_five_incomes,
-        'average_incomes_per_day': str(average_incomes_per_day).replace('.', ','),
-        'average_outcomes_per_day': str(average_outcomes_per_day).replace('.', ','),
+        # 'average_incomes_per_day': str(average_incomes_per_day).replace('.', ','),
+        # 'average_outcomes_per_day': str(average_outcomes_per_day).replace('.', ','),
         'user_currency': user_currency,
     })
 
-def diff_month(d1, d2):
-    return (d1.year - d2.year) * 12 + d1.month - d2.month
-
 def get_statistics_data(request):
     today = date.today()
-    number_of_days_in_actual_month = int(get_last_date_of_month(today.year, today.month)[-2:])
-    # print(number_of_days_in_actual_month + 2)
-    # last_balance = Balance.objects.filter(user=request.user, type=1).order_by('-date').first()
-    # if not last_balance:
-    #     return JsonResponse({'error': 'No current balance has been recorded. Please add at least one current balance record.'})
-        
-    start_month = date(today.year-1, 1, 1)
-    end_month = date(today.year-1, 12, 31)
-
-    print("************** uwaga statistics data ***")
-    print(start_month)
-    print(end_month)
-
-    days_of_previous_year = 366 if calendar.isleap(today.year) else 365
-    days_of_current_year = 366 if calendar.isleap(today.year) else 365
-    print(days_of_previous_year)
-    
-    last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
-    prev_start_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
-    # print(previous_start_month)
-    # print(last_day_of_prev_month)
-
-    # Savings
-    total_saving_balance = Balance.objects\
-        .filter(user=request.user, type=2).aggregate(total=Sum('value'))['total']
-    total_saving_balance = 0 if total_saving_balance is None else total_saving_balance
-    last_total_balance = Balance.objects\
-        .filter(user=request.user, type=2, date__gte=prev_start_month, date__lte=last_day_of_prev_month).aggregate(total=Sum('value'))['total']
-    last_total_balance = 0 if last_total_balance is None else last_total_balance
-    savings = total_saving_balance - last_total_balance
-
-    # Last 5 outcomes
-    last_five_outcomes_model = Outcome.objects.filter(user=request.user)[:5]
-    last_five_outcomes = []
-    for outcome in last_five_outcomes_model:
-        last_five_outcomes.append({'id': outcome.id, 'type': outcome.get_type_display(), 'date': outcome.date, 'value': str(outcome.value).replace('.', ',')})
-    print(last_five_outcomes)
-
-    # Last 5 incomes
-    last_five_incomes_model = Income.objects.filter(user=request.user)[:5]
-    last_five_incomes = []
-    for income in last_five_incomes_model:
-        last_five_incomes.append({'id': income.id, 'type': income.get_type_display(), 'date': income.date, 'value': str(income.value).replace('.', ',')})
-    print(last_five_incomes)
-
-
-    translation.activate('pl')
-    actual_month = date_format(today, 'F')
-
-    # end_date = get_last_date_of_month(today.year, today.month)
-
-    print("Actual month")
-    print(get_last_date_of_month(today.year, today.month)[-2:])
-    
-    
-    # total_outcome = Outcome.objects\
-    #     .filter(user=request.user, date__gte=last_balance.date, date__lte=today, repetitive=False)\
-    #     .aggregate(total=Sum('value'))['total']
-    # total_outcome = 0 if total_outcome is None else total_outcome
-
-    # incomes = Income.objects.filter(user=request.user, date__gte=last_balance.date, repetitive=False)
-    # rep_incomes = Income.objects.filter(user=request.user, repetitive=True)
-    # outcomes = Outcome.objects.filter(user=request.user, date__gte=last_balance.date, repetitive=False)
-    # rep_outcomes = Outcome.objects.filter(user=request.user, repetitive=True)
-
-    # Updated total with repetitive
-    # for income in Income.objects.filter(user=request.user, repetitive=True):
-    #     total_income += calculate_repetitive_total(income, last_balance.date, today)
-    # for outcome in Outcome.objects.filter(user=request.user, repetitive=True):
-    #     total_outcome += calculate_repetitive_total(outcome, last_balance.date, today)
-
-    # context = {
-    #     'last_balance': last_balance,
-    #     'estimated_balance': last_balance.value + total_income - total_outcome,
-    #     'total_income': total_income,
-    #     'total_outcome': total_outcome
-    # }
-
-    # return render(request, 'my_finances/current_finances.html', context=context)
-
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
 
-    # at least one object satisfying query exists
-
-    first_income_date = Income.objects.filter(user=request.user).order_by('date').first().date
-    first_outcome_date = Outcome.objects.filter(user=request.user).order_by('date').first().date
+    first_income_date = Income.objects.filter(user=request.user).order_by('date').first().date if Income.objects.filter(user=request.user).exists() else today
+    first_outcome_date = Outcome.objects.filter(user=request.user).order_by('date').first().date if Outcome.objects.filter(user=request.user).exists() else today
     first_income_outcome_date = min(first_income_date, first_outcome_date)
     print(f"pierwsza daata to: {first_income_outcome_date}")
-    # last_income_date = today
 
-    number_of_days_in_last_income_month = int(get_last_date_of_month(today.year, today.month)[-2:])
-    # # first_income_date = 
-    print(first_income_date)
-    print(today)
-    # month_diference = 12
     monday1 = (first_income_outcome_date - timedelta(days=first_income_outcome_date.weekday()))
     monday2 = (today - timedelta(days=today.weekday()))
-    date_delta = relativedelta.relativedelta(today, first_income_outcome_date)
     days_difference = (today - first_income_outcome_date).days
     weeks_difference = Decimal((monday2 - monday1).days / 7)
     months_difference = Decimal(days_difference / 30)
@@ -666,44 +428,8 @@ def get_statistics_data(request):
     years_difference = Decimal(days_difference / 365)
     if years_difference < 1:
         years_difference = 0
-    # print(f"Roznica w latach: {years_difference}")
-    # print(f'Pierwszy income - {first_income_date}')
-    # print(f"Roznica w miesiacach: {months_difference}")
-    # print(f"Roznica w dniach: {first_income_outcome_date}")
-    # print(f"Roznica w tyg: {first_income_outcome_date}")
 
-    # if first_income_date.year > today.year - 1:
-    #     if first_income_date.year == today.year:
-    #         print("zgodne")
-    #         month_diference = today.month - first_income_date.month + 1
-    #         if first_income_date.day != 1:
-    #             print("rozny od 1")
-    #             month_diference -= 1
-    #         if today.day != number_of_days_in_last_income_month:
-    #             print(f"last rowniez rozny od {number_of_days_in_last_income_month}")
-    #             month_diference -= 1
-
-    #         print(month_diference)
-
-
-# no object satisfying query exists
-
-# print(diff_month(today, first_income_date))
-
-
-
-# print(f"Roznica month: {res_months}")
-
-    # print(diff_month(datetime(2010,10,13), datetime(2008,10,1)))
-    # print(list(rrule.rrule(rrule.MONTHLY, dtstart=first_income_date, until=today)))
-
-    # Initialise totals with sums of non repetitive incomes and outcomes
-    total_balance = Balance.objects\
-        .filter(user=request.user, type=1).aggregate(total=Sum('value'))['total']
-    total_balance = 0 if total_balance is None else total_balance
-    total_savings = Balance.objects\
-        .filter(user=request.user, type=2).aggregate(total=Sum('value'))['total']
-    total_savings = 0 if total_savings is None else total_savings
+   
     total_income = Income.objects\
         .filter(user=request.user)\
         .aggregate(total=Sum('value'))['total']
@@ -727,15 +453,6 @@ def get_statistics_data(request):
     average_outcomes_per_year = total_outcome if years_difference == 0 else round(total_outcome/years_difference, 2)
 
     return JsonResponse({
-        'total_balance': str(total_balance).replace('.', ','),
-        'total_savings': str(total_savings).replace('.', ','),
-        'total_income': str(total_income).replace('.', ','),
-        'total_outcome': str(total_outcome).replace('.', ','),
-        'actual_month': actual_month,
-        'savings': savings,
-        'years_difference': years_difference,
-        'last_five_outcomes': last_five_outcomes,
-        'last_five_incomes': last_five_incomes,
         'average_incomes_per_day': str(average_incomes_per_day).replace('.', ','),
         'average_outcomes_per_day': str(average_outcomes_per_day).replace('.', ','),
         'average_incomes_per_week': str(average_incomes_per_week).replace('.', ','),
@@ -747,227 +464,11 @@ def get_statistics_data(request):
         'user_currency': user_currency,
     })
 
-    # else:
-    #     return JsonResponse({
-    #         'actual_month': actual_month,
-    #         'last_five_outcomes': last_five_outcomes,
-    #         'last_five_incomes': last_five_incomes,
-    #         'income_information': 'Nie wprowadzono jeszcze żadnych przychodów',
-    #         'outcome_information': 'Nie wprowadzono jeszcze żadnych wydatków',
-    #         'average_incomes_per_month': '',
-    #         'average_outcomes_per_month': '',
-    #         'data_exist': False,
-    #         'user_currency': user_currency,
-    #     })
-
-    
 
 
-
-
-# def get_savings_data(request):
-#     today = date.today()
-#     # last_balance = Balance.objects.filter(user=request.user, type=1).order_by('-date').first()
-#     # if not last_balance:
-#     #     return JsonResponse({'error': 'No current balance has been recorded. Please add at least one current balance record.'})
-        
-#     start_month = date.today().replace(day=1)
-#     end_month = get_last_date_of_month(today.year, today.month)
-    
-#     last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
-#     prev_start_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
-#     # print(previous_start_month)
-#     # print(last_day_of_prev_month)
-
-#     # Initialise totals with sums of non repetitive incomes and outcomes
-#     total_savings_balance = Balance.objects\
-#         .filter(user=request.user, type=2).aggregate(total=Sum('value'))['total']
-#     total_savings_balance = 0 if total_savings_balance is None else total_savings_balance
-#     # total_income = Income.objects\
-#     #     .filter(user=request.user, date__gte=start_month, date__lte=end_month)\
-#     #     .aggregate(total=Sum('value'))['total']
-#     # total_income = 0 if total_income is None else total_income
-#     # total_outcome = Outcome.objects\
-#     #     .filter(user=request.user, date__gte=start_month, date__lte=end_month)\
-#     #     .aggregate(total=Sum('value'))['total']
-#     # total_outcome = 0 if total_outcome is None else total_outcome
-
-#     # Savings
-#     # total_saving_balance = Balance.objects\
-#     #     .filter(user=request.user, type=2).aggregate(total=Sum('value'))['total']
-#     # total_saving_balance = 0 if total_saving_balance is None else total_saving_balance
-#     # last_total_balance = Balance.objects\
-#     #     .filter(user=request.user, type=2, date__gte=prev_start_month, date__lte=last_day_of_prev_month).aggregate(total=Sum('value'))['total']
-#     # last_total_balance = 0 if last_total_balance is None else last_total_balance
-#     # savings = total_saving_balance - last_total_balance
-
-#     # Last 5 outcomes
-#     # last_five_outcomes_model = Outcome.objects.filter(user=request.user)[:5]
-#     # last_five_outcomes = []
-#     # for outcome in last_five_outcomes_model:
-#     #     last_five_outcomes.append({'id': outcome.id, 'type': outcome.get_type_display(), 'date': outcome.date, 'value': outcome.value})
-#     # print(last_five_outcomes)
-
-#     # Last 5 incomes
-#     # last_five_incomes_model = Income.objects.filter(user=request.user)[:5]
-#     # last_five_incomes = []
-#     # for income in last_five_incomes_model:
-#     #     last_five_incomes.append({'id': income.id, 'type': income.get_type_display(), 'date': income.date, 'value': income.value})
-#     # print(last_five_incomes)
-
-#     translation.activate('pl')
-#     actual_month = date_format(date.today(), 'F')
-    
-    
-#     # total_outcome = Outcome.objects\
-#     #     .filter(user=request.user, date__gte=last_balance.date, date__lte=today, repetitive=False)\
-#     #     .aggregate(total=Sum('value'))['total']
-#     # total_outcome = 0 if total_outcome is None else total_outcome
-
-#     # incomes = Income.objects.filter(user=request.user, date__gte=last_balance.date, repetitive=False)
-#     # rep_incomes = Income.objects.filter(user=request.user, repetitive=True)
-#     # outcomes = Outcome.objects.filter(user=request.user, date__gte=last_balance.date, repetitive=False)
-#     # rep_outcomes = Outcome.objects.filter(user=request.user, repetitive=True)
-
-#     # Updated total with repetitive
-#     # for income in Income.objects.filter(user=request.user, repetitive=True):
-#     #     total_income += calculate_repetitive_total(income, last_balance.date, today)
-#     # for outcome in Outcome.objects.filter(user=request.user, repetitive=True):
-#     #     total_outcome += calculate_repetitive_total(outcome, last_balance.date, today)
-
-#     # context = {
-#     #     'last_balance': last_balance,
-#     #     'estimated_balance': last_balance.value + total_income - total_outcome,
-#     #     'total_income': total_income,
-#     #     'total_outcome': total_outcome
-#     # }
-
-#     # return render(request, 'my_finances/current_finances.html', context=context)
-
-#     return JsonResponse({
-#         # 'total_balance': str(total_balance).replace('.', ','),
-#         # 'total_income': str(total_income).replace('.', ','),
-#         # 'total_outcome': str(total_outcome).replace('.', ','),
-#         'actual_month': actual_month,
-#         # 'savings': savings,
-#         # 'last_five_outcomes': last_five_outcomes,
-#         # 'last_five_incomes': last_five_incomes,
-#         'total_savings_balance': str(total_savings_balance).replace('.', ','),
-#     })
-
-
-# def get_balance_chart(request):
-#     all_sleep = Balance.objects.filter(user=request.user, type=1).order_by('date')
-
-#     date_list = [sleep_date['date'] for sleep_date in Balance.objects.filter(user=request.user).order_by('date').values('date').distinct()]
-
-#     today = datetime.now()    
-#     print(today.date())
-#     n_days_ago = today - timedelta(days=14)
-
-#     date_last14 = []
-
-#     for i in range(14, -1 ,-1):
-#         n_days_ago = today - timedelta(days=i)
-#         date_last14.append(n_days_ago.date())
-
-#     sum_value_at_date = []
-    
-
-#     for sleep_date in date_last14:
-#         activities_tot = Balance.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=sleep_date)))['s']
-#         if activities_tot is None:
-#             sum_value_at_date.append(0)
-#         else:
-#             sum_value_at_date.append(activities_tot)
-
-#     sum = 0
-#     items = 0
-#     for item in sum_value_at_date:
-#         if item != 0:
-#             sum += item
-#             items += 1
-
-#     if items == 0:
-#         average = 0
-#     else:
-#         average = sum/items
-#     print(average)
-
-#     print(sum_value_at_date)
-
-#     first_date_of_14_days = date_last14[0]
-#     last_date_of_14_days = date_last14[-1]
-
-#     # context = {
-        
-#     # }
-
-#     return JsonResponse({
-#         # 'all_sleep': all_sleep,
-#         'date_last14': date_last14,
-#         'data': sum_value_at_date,
-#         'first_date_of_14_days': first_date_of_14_days,
-#         'last_date_of_14_days': last_date_of_14_days,
-#         'sleep_avg': average
-#     })
-
-
-def get_year_chart_custom(request):
-    # balance_type = request.GET.get('balance_type')
-    # if balance_type not in ['current', 'savings']:
-    #     return JsonResponse({'error': 'Please specify balanse_type parameter to be either "current" or "savings"'})
-
-    # today = date.today()
-    # beginning_of_year = date(today.year, 1, 1)
-    # end_of_year = date(today.year, 12, 28)
-    # # Try to get last balance check before the beginning of this year
-    # balance = Balance.objects.filter(user=request.user, type=1 if balance_type == 'current' else 2, date__lte=beginning_of_year) \
-    #     .order_by('-date').first()
-    # if balance is None:
-    #     # If there's no balance check before the year - get this first one of this year
-    #     balance = Balance.objects.filter(user=request.user, type=1 if balance_type == 'current' else 2).order_by('date').first()
-    #     if balance is None:
-    #         return JsonResponse({'error': 'No current balance has been recorded. '
-    #                                       'Please add at least one current balance record.'})
-
-    all_sleep = Balance.objects.filter(user=request.user).order_by('date')
-
-    all_incomes = Income.objects.filter(user=request.user)
-
-    all_outcomes = Outcome.objects.filter(user=request.user)
-
+def get_incomes_vs_outcomes_chart(request):
     context_label = Account.objects.get(user_id=request.user.id).get_currency_display()
-
-    # Balance.objects
-    #     .annotate(month=TruncMonth('created'))  # Truncate to month and add to select list
-    #     .values('month')                          # Group By month
-    #     .annotate(c=Count('id'))                  # Select the count of the grouping
-    #     .values('month', 'c')                     # (might be redundant, haven't tested) select month and count 
-
-    # date_list = [sleep_date['date'] for sleep_date in Balance.objects.filter(user=request.user).order_by('date').values('date').distinct()]
-
-    N = 12 * 30
-
     today = datetime.now()    
-    #print(today.date())
-    n_days_ago = today - timedelta(days=N)
-
-    date_last_time = []
-
-    for i in range(N, -1 ,-1):
-        n_days_ago = today - timedelta(days=i)
-        date_last_time.append(n_days_ago.date())
-
-    sum_value_at_date = []
-    
-
-    for sleep_date in date_last_time:
-        activities_tot = Balance.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=sleep_date)))['s']
-        sum_value_at_date.append(activities_tot)
-
-    daty = []
-
     month_labels = [
         "Styczeń",
         "Luty",
@@ -983,7 +484,6 @@ def get_year_chart_custom(request):
         "Grudzień"
     ]
 
-
     total_income_monthly_sum = []
     total_outcome_monthly_sum = []
 
@@ -991,6 +491,7 @@ def get_year_chart_custom(request):
 
     for i in range(1,12):
         start_date = date(today.year, i, 1)
+        # tutaj czy rok przystępny trzeba sprawdzić co do lutego
         if i == 2:
             end_date = date(today.year, i, 28)
         elif i in month_days_30:
@@ -1010,160 +511,12 @@ def get_year_chart_custom(request):
         total_income_monthly_sum.append(total_income_monthly)
         total_outcome_monthly_sum.append(total_outcome_monthly)
 
-        daty.append(start_date)
-        daty.append(end_date)
-
-    # print(daty)
-    # print(total_income_monthly_sum)
-    # print(total_outcome_monthly_sum)
-        
-
-    # januar_start_date = date(today.year, 1, 1)
-    # januar_end_date = date(today.year, 1, 31)
-
-    # januar_start_date = date(today.year, 1, 1)
-    # januar_end_date = date(today.year, 1, 31)
-
-    # januar_start_date = date(today.year, 1, 1)
-    # januar_end_date = date(today.year, 1, 31)
-
-    # total_year_outcomes = Outcome.objects\
-    #     .filter(user=request.user, date__gte=date(today.year, 1, 1), date__lte=date(today.year, 12, 31))\
-    #     .aggregate(total=Sum('value'))['total']
-
-    # average_monthly_outcomes = round((total_year_outcomes/12), 2)
-
-    
-    # print(total_income_januar)
-
-    print([v for v in
-       Income.objects.annotate(month=TruncMonth('date'))
-                      .values('month')
-                      .annotate(total=Count('value'))
-                      .values('month', 'total')
-       ])
-
-    sum = 0
-    items = 0
-    # for item in sum_value_at_date:
-    #     if item != 0:
-    #         sum += item
-    #         items += 1
-
-    if items == 0:
-        average = 0
-    else:
-        average = sum/items
-    print(average)
-
-    print(sum_value_at_date)
-
-    first_date_of_14_days = date_last_time[0]
-    last_date_of_14_days = date_last_time[-1]
-
     return JsonResponse({
-        # 'all_sleep': all_sleep,
-        'date_last14': date_last_time,
         'month_labels': month_labels,
-        'data': sum_value_at_date,
-        'first_date_of_14_days': first_date_of_14_days,
-        'last_date_of_14_days': last_date_of_14_days,
         'total_income_monthly_sum': total_income_monthly_sum,
         'total_outcome_monthly_sum': total_outcome_monthly_sum,
-        'sleep_avg': average,
         'context_label': context_label
     })
-
-
-
-
-# def get_year_chart(request):
-#     balance_type = request.GET.get('balance_type')
-#     if balance_type not in ['current', 'savings']:
-#         return JsonResponse({'error': 'Please specify balanse_type parameter to be either "current" or "savings"'})
-
-#     today = date.today()
-#     beginning_of_year = date(today.year, 1, 1)
-#     end_of_year = date(today.year, 12, 28)
-#     # Try to get last balance check before the beginning of this year
-#     balance = Balance.objects.filter(user=request.user, type=1 if balance_type == 'current' else 2, date__lte=beginning_of_year) \
-#         .order_by('-date').first()
-#     if balance is None:
-#         # If there's no balance check before the year - get this first one of this year
-#         balance = Balance.objects.filter(user=request.user, type=1 if balance_type == 'current' else 2).order_by('date').first()
-#         if balance is None:
-#             return JsonResponse({'error': 'No current balance has been recorded. '
-#                                           'Please add at least one current balance record.'})
-
-#     # Assuming we found balance - we start calculating from there
-#     balance_checks = {}
-#     income_per_day = {}
-#     outcome_per_day = {}
-
-#     for b in Balance.objects.filter(user=request.user, type=1 if balance_type == 'current' else 2, date__gte=balance.date):
-#         balance_checks[str(b.date)] = b.value
-
-#     if balance_type == 'current':
-#         for i in Income.objects.filter(user=request.user, date__gte=balance.date):
-#             income_per_day[str(i.date)] = i.value if str(i.date) not in income_per_day \
-#                 else income_per_day[str(i.date)] + i.value
-#         for o in Outcome.objects.filter(user=request.user, date__gte=balance.date):
-#             outcome_per_day[str(o.date)] = o.value if str(o.date) not in outcome_per_day \
-#                 else outcome_per_day[str(o.date)] + o.value
-
-
-#     else:
-#         # If balance_type is saving, we want to only look at incomes and outcomes of type SAVINGS
-#         # Also, income of type SAVING will act like an outcome for saving balance and vice versa
-#         for i in Income.objects.filter(user=request.user, date__gte=balance.date, type=5):
-#             outcome_per_day[str(i.date)] = i.value if str(i.date) not in outcome_per_day \
-#                 else outcome_per_day[str(i.date)] + i.value
-#         for o in Outcome.objects.filter(user=request.user, date__gte=balance.date, type=10):
-#             income_per_day[str(o.date)] = o.value if str(o.date) not in income_per_day \
-#                 else income_per_day[str(o.date)] + o.value
-
-
-
-
-#     labels = []
-#     data_estimated = []
-#     data_balance_check = []
-#     data_today = []
-#     date_marker = balance.date
-#     balance_on_marker_date = balance.value
-
-#     if date_marker > beginning_of_year:
-#         fill_date_marker = date(today.year, 1, 1)
-#         while fill_date_marker < date_marker:
-#             labels.append(str(fill_date_marker))
-#             data_estimated.append(None)
-#             data_balance_check.append(None)
-#             data_today.append(None)
-#             fill_date_marker += timedelta(days=1)
-#     else:
-#         while date_marker < beginning_of_year:
-#             balance_on_marker_date += income_per_day.get(str(date_marker), 0)
-#             balance_on_marker_date -= outcome_per_day.get(str(date_marker), 0)
-#             date_marker += timedelta(days=1)
-
-#     # Calculate and prepare balance per day for this year
-#     while date_marker <= end_of_year:
-#         labels.append(str(date_marker))
-#         if str(date_marker) in balance_checks:
-#             balance_on_marker_date = balance_checks[str(date_marker)]
-#             data_balance_check.append(balance_checks[str(date_marker)])
-#         else:
-#             balance_on_marker_date += income_per_day.get(str(date_marker), 0)
-#             balance_on_marker_date -= outcome_per_day.get(str(date_marker), 0)
-#             data_balance_check.append(None)
-#         data_estimated.append(balance_on_marker_date)
-#         if date_marker == today:
-#             data_today.append(balance_on_marker_date)
-#         else:
-#             data_today.append(None)
-#         date_marker += timedelta(days=1)
-#     return JsonResponse({'labels': labels, 'data_estimated': data_estimated, 'data_balance_check': data_balance_check,
-#                          'data_today': data_today})
 
 
 def get_income_or_outcome_by_type(request):
@@ -1292,131 +645,6 @@ def get_income_or_outcome_by_type(request):
         return JsonResponse({'error': 'Please specify view_type parameter to be either amount or percentage'})
 
     return JsonResponse({'labels': labels, 'data': data, 'context_label': context_label})
-
-
-# def get_progressbar_data(request):
-#     get_what = request.GET.get('get_what')
-#     summary_type = request.GET.get('summary_type')
-#     if get_what is None or get_what not in ['income', 'outcome']:
-#         return JsonResponse({'error': 'Please specify get_what parameter to be either "income or "outcome'})
-#     if get_what == 'income':
-#         obj = Income
-#         obj_types = Income.ITypes
-#     else:
-#         obj = Outcome
-#         obj_types = Outcome.OTypes
-
-#     today = date.today()
-
-#     month_days_30 = [4,6,9,11]
-
-#     # for i in range(1,12):
-#     #     start_date = date(today.year, i, 1)
-#     #     if i == 2:
-#     #         end_date = date(today.year, i, 28)
-#     #     elif i in month_days_30:
-#     #         end_date = date(today.year, i, 30)
-
-#     #     else:
-#     #         end_date = date(today.year, i, 31)
-
-#     if summary_type == 'mon1':
-#         # last_balance = Balance.objects.filter(user=request.user, type=1).order_by('-date').first()
-#         # if not last_balance:
-#         #     return JsonResponse({'error': 'No current balance has been recorded. '
-#         #                         'Please add at least one current balance record. '})
-        
-#         # start_date = 
-#         # end_date = today
-#         start_date = date.today().replace(day=1)
-#         end_date = get_last_date_of_month(today.year, today.month)
-#         print("Miesiace")
-#         print(start_date)
-#         print(end_date)
-#         print("Koniec")
-        
-
-#     elif summary_type == 'week':
-#         start_date = date.today() - timedelta(days=7)
-
-#         end_date = date.today()
-#         print("Miesiace")
-#         print(start_date)
-#         print(end_date)
-#         print("Koniec")
-
-#     elif summary_type == 'mon3':
-#         start_date = date.today().replace(day=1) - timedelta(days=60)
-#         start_date = start_date.replace(day=1)
-
-#         end_date = get_last_date_of_month(today.year, today.month)
-#         print("Miesiace")
-#         print(start_date)
-#         print(end_date)
-#         print("Koniec")
-
-#     elif summary_type == 'mon6':
-#         start_date = date.today().replace(day=1) - timedelta(days=140)
-#         start_date = start_date.replace(day=1)
-
-#         end_date = get_last_date_of_month(today.year, today.month)
-#         print("Miesiace")
-#         print(start_date)
-#         print(end_date)
-#         print("Koniec")
-    
-#     elif summary_type == 'year1':
-#         start_date = date(today.year, 1, 1)
-
-#         end_date = date(today.year, 12, 31)
-#         print("Miesiace")
-#         print(start_date)
-#         print(end_date)
-#         print("Koniec")
-    
-#     elif summary_type == 'all':
-#         last_object = obj.objects.filter(user=request.user).order_by('-date').first()
-#         first_object = obj.objects.filter(user=request.user).order_by('-date').last()
-#         start_date = first_object.date
-
-#         end_date = last_object.date
-#         print("Miesiace")
-#         print(start_date)
-#         print(end_date)
-#         print("Koniec")
-
-#     else:
-#         return JsonResponse({'error': 'Please specify summary_type parameter to be either current_period or year_overview'})
-    
-#     labels = []
-#     data = []
-#     progress_bar_data = []
-
-#     total_all_objects = obj.objects.filter(user=request.user, date__gte=start_date,
-#         date__lte=end_date).aggregate(total=Sum('value'))['total']
-
-#     last_five_outcomes = []
-#     # id = 0
-    
-#     for obj_type in obj_types.choices:
-#         labels.append(obj_type[1])
-#         total = obj.objects.filter(user=request.user, type=obj_type[0], date__gte=start_date,
-#             date__lte=end_date).aggregate(total=Sum('value'))['total']
-#         total = 0 if total is None else total
-
-#         progress = total/total_all_objects
-
-#         last_five_outcomes.append({'type': obj_type[1], 'value': total, 'progress': progress})
-
-
-#         data.append(total)
-#         progress_bar_data.append(progress)
-
-#         # id += 1
-
-#     last_five_outcomes.sort(key=lambda item: item['value'], reverse=True)    
-
-#     return JsonResponse({'labels': labels, 'data': data, 'total_all_objects': total_all_objects, 'progress_bar_data': progress_bar_data, 'last_five_outcomes':last_five_outcomes})
 
 
 # W tej funkcji trzeba w zaleznosci od summary type pododawac do wykresy wydatki i przychdy
@@ -1796,16 +1024,6 @@ def get_income_or_outcome_bar_chart(request):
 
 
 def get_progress_data(request):
-    # chosen_year = request.GET.get('chosen_year')
-    # if get_what is None or get_what not in ['income', 'outcome']:
-    #     return JsonResponse({'error': 'Please specify get_what parameter to be either "income or "outcome'})
-    # if get_what == 'income':
-    #     obj = Income
-    #     obj_types = Income.ITypes
-    # else:
-    #     obj = Outcome
-    #     obj_types = Outcome.OTypes
-
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
     user_saving_method = Account.objects.get(user_id=request.user.id).saving_method
 
@@ -2053,383 +1271,6 @@ def get_progress_data(request):
             else:
                 ...
 
-    # print(dates)
-
-    
-    # if Income.objects.filter(user=request.user).exists() and Outcome.objects.filter(user=request.user).exists():
-    # # at least one object satisfying query exists
-
-    #     first_income_date = Income.objects.filter(user=request.user).order_by('date').first().date
-    #     today = Income.objects.filter(user=request.user).order_by('date').last().date
-
-    #     number_of_days_in_last_income_month = int(get_last_date_of_month(today.year, today.month)[-2:])
-    #     # # first_income_date = 
-    #     print(first_income_date)
-    #     print(today)
-    #     # month_diference = 12
-    #     delta = relativedelta.relativedelta(today, first_income_date)
-    #     months_difference = delta.months + (delta.years * 12)
-    #     years_difference = delta.years
-        
-    #     print(years_difference) 
-
-
-    # month_days_30 = [4,6,9,11]
-
-    # labels = []
-    # data = []
-
-    # translation.activate('pl')
-
-
-    # for i in range(1,12):
-    #     start_date = date(today.year, i, 1)
-    #     if i == 2:
-    #         end_date = date(today.year, i, 28)
-    #     elif i in month_days_30:
-    #         end_date = date(today.year, i, 30)
-
-    #     else:
-    #         end_date = date(today.year, i, 31)
-
-    # if summary_type == 'mon1':
-    #     # last_balance = Balance.objects.filter(user=request.user, type=1).order_by('-date').first()
-    #     # if not last_balance:
-    #     #     return JsonResponse({'error': 'No current balance has been recorded. '
-    #     #                         'Please add at least one current balance record. '})
-        
-    #     # start_date = 
-    #     # end_date = today
-
-    #     total_income_monthly_sum = []
-    #     total_outcome_monthly_sum = []
-
-
-    #     # all_activities_today = Activity.objects.filter(date=date.today(), user=request.user)
-
-    #     # all_activities = Activity.objects.filter(user=request.user).order_by('date')
-
-    #     # type_list = [activity_type['type'] for activity_type in Activity.objects.filter(user=request.user).values('type')]
-
-    #     # print(type_list)
-
-    #     # date_list = [activity_date['date'] for activity_date in Activity.objects.filter(user=request.user).values('date').order_by('date').distinct()]
-
-    #     today = datetime.now()
-
-    #     # labels = []
-
-    #     month_days_30 = [4,6,9,11]
-
-    #     if today.month in month_days_30:
-    #         N = 30
-    #     else:
-    #         N = 31
-
-    #     start_date = date(today.year, today.month, 1)
-    #     end_date = get_last_date_of_month(today.year, today.month)
-
-    #     print(start_date)
-    #     print(end_date)
-    #     print(N)
-
-
-    #     # n_days_ago = today - timedelta(days=N)
-
-    #     # labels.append(start_date)
-
-
-    #     for i in range(1,N+1):
-    #         print(i)
-    #         labels.append(start_date)
-    #         start_date += timedelta(days=1)
-
-    #     print(today.month)
-
-    #     #print("Daty",date_last14)
-
-    #     activity_label = []
-
-    #     # for activity in all_activities_today:
-    #     #     activity_label.append(activity.type)
-
-    #     for activity_date in labels:
-    #         total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=activity_date)))['s']
-    #         # if total is None:
-    #         #     data.append(0)
-    #         # else:
-    #         data.append(total)
-
-
-    #     # for i in range(1,12):
-    #     #     start_date = date(today.year, i, 1)
-    #     #     if i == 2:
-    #     #         end_date = date(today.year, i, 28)
-    #     #     elif i in month_days_30:
-    #     #         end_date = date(today.year, i, 30)
-
-    #     #     else:
-    #     #         end_date = date(today.year, i, 31)
-
-    #     #     total_income_monthly = Income.objects\
-    #     #         .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-    #     #         .aggregate(total=Sum('value'))['total']
-
-    #     #     total_outcome_monthly = Outcome.objects\
-    #     #         .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-    #     #         .aggregate(total=Sum('value'))['total']
-
-    #     #     total_income_monthly_sum.append(total_income_monthly)
-    #     #     total_outcome_monthly_sum.append(total_outcome_monthly)
-
-    #     #     daty.append(start_date)
-    #     #     daty.append(end_date)
-
-    #     #     print(daty)
-    #     #     print(total_income_monthly_sum)
-    #     #     print(total_outcome_monthly_sum)
-            
-        
-    #     #     start_date = date.today().replace(day=1)
-    #     #     end_date = get_last_date_of_month(today.year, today.month)
-    #     #     print("Miesiace")
-    #     #     print(start_date)
-    #     #     print(end_date)
-    #     #     print("Koniec")
-        
-
-    # elif summary_type == 'week':
-    #     # start_date = date.today() - timedelta(days=7)
-
-    #     # end_date = date.today()
-    #     # print("Miesiace")
-    #     # print(start_date)
-    #     # print(end_date)
-    #     # print("Koniec")
-
-    #     today = datetime.now()
-
-    #     # labels = []
-
-    #     month_days_30 = [4,6,9,11]
-
-    #     # if today.month in month_days_30:
-    #     #     N = 30
-    #     # else:
-    #     #     N = 31
-
-    #     start_date = date.today() - timedelta(days=7)
-
-    #     end_date = date.today()
-    #     N = 8
-
-    #     # start_date = date(today.year, today.month, 1)
-    #     # end_date = get_last_date_of_month(today.year, today.month)
-
-    #     print(start_date)
-    #     print(end_date)
-    #     print(N)
-
-    #     dates = []
-
-
-    #     # n_days_ago = today - timedelta(days=N)
-
-    #     # labels.append(start_date)
-
-
-    #     for i in range(1,N+1):
-    #         print(i)
-    #         dates.append(start_date)
-    #         labels.append(f"{date_format(start_date, 'D')} ({start_date})")
-    #         start_date += timedelta(days=1)
-
-    #     print(today.month)
-
-    #     #print("Daty",date_last14)
-
-    #     activity_label = []
-
-    #     # for activity in all_activities_today:
-    #     #     activity_label.append(activity.type)
-
-    #     for activity_date in dates:
-    #         total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=activity_date)))['s']
-    #         # if total is None:
-    #         #     data.append(0)
-    #         # else:
-    #         data.append(total)
-
-        
-
-    # elif summary_type == 'mon3':
-
-    #     first_month_start_date = (date.today().replace(day=1) - timedelta(days=60)).replace(day=1)
-    #     first_month_end_date = get_last_date_of_month(today.year, first_month_start_date.month)
-
-    #     second_month_start_date = (first_month_start_date + timedelta(days=40)).replace(day=1)
-    #     second_month_end_date = get_last_date_of_month(today.year, second_month_start_date.month)
-
-    #     third_month_start_date = date.today().replace(day=1)
-    #     third_month_end_date = get_last_date_of_month(today.year, today.month)
-
-    #     start_dates = [first_month_start_date, second_month_start_date, third_month_start_date]
-    #     end_dates = [first_month_end_date, second_month_end_date, third_month_end_date]
-
-    #     for start_date,end_date in zip(start_dates, end_dates):
-    #         print(f"{start_date} - {end_date}")
-    #         labels.append(date_format(start_date, 'F'))
-    #         total = obj.objects.filter(user=request.user, date__gte=start_date,
-    #             date__lte=end_date).aggregate(total=Sum('value'))['total']
-    #         data.append(total)
-
-    #     # first_month = date_format(first_month_start_date, 'F')
-    #     # second_month = date_format(second_month_start_date, 'F')
-    #     # third_month = date_format(third_month_start_date, 'F')
-
-    #     # labels1 = [first_month, second_month, third_month]
-
-
-    #     # print(first_month)
-    #     # print(second_month)
-    #     # print(third_month)
-    #     # print(labels1)
-
-
-
-
-    #     # n_days_ago = today - timedelta(days=N)
-
-    #     # labels.append(start_date)
-
-
-    #     # for i in range(1,10+1):
-    #     #     print(i)
-    #     #     labels.append(first_month_start_date)
-    #     #     first_month_start_date += timedelta(days=1)
-
-    #     # print(today.month)
-
-    #     #print("Daty",date_last14)
-
-
-    #     # for activity in all_activities_today:
-    #     #     activity_label.append(activity.type)
-
-    #     # for activity_date in labels:
-    #     #     total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=activity_date)))['s']
-    #     #     # if total is None:
-    #     #     #     data.append(0)
-    #     #     # else:
-    #     #     data.append(total)
-
-    #     # month_days_30 = [4,6,9,11]
-
-
-    # elif summary_type == 'mon6':
-    #     first_month_start_date = (date.today().replace(day=1) - timedelta(days=140)).replace(day=1)
-    #     first_month_end_date = get_last_date_of_month(today.year, first_month_start_date.month)
-        
-    #     second_month_start_date = (first_month_start_date + timedelta(days=40)).replace(day=1)
-    #     second_month_end_date = get_last_date_of_month(today.year, second_month_start_date.month)
-
-    #     third_month_start_date = (second_month_start_date + timedelta(days=40)).replace(day=1)
-    #     third_month_end_date = get_last_date_of_month(today.year, third_month_start_date.month)
-
-    #     fourth_month_start_date = (third_month_start_date + timedelta(days=40)).replace(day=1)
-    #     fourth_month_end_date = get_last_date_of_month(today.year, fourth_month_start_date.month)
-
-    #     fifth_month_start_date = (fourth_month_start_date + timedelta(days=40)).replace(day=1)
-    #     fifth_month_end_date = get_last_date_of_month(today.year, fifth_month_start_date.month)
-
-    #     sixth_month_start_date = date.today().replace(day=1)
-    #     sixth_month_end_date = get_last_date_of_month(today.year, today.month)
-
-    #     start_dates = [first_month_start_date, second_month_start_date, third_month_start_date, fourth_month_start_date, fifth_month_start_date, sixth_month_start_date]
-    #     end_dates = [first_month_end_date, second_month_end_date, third_month_end_date, fourth_month_end_date, fifth_month_end_date, sixth_month_end_date]
-
-    #     for start_date,end_date in zip(start_dates, end_dates):
-    #         print(f"{start_date} - {end_date}")
-    #         labels.append(date_format(start_date, 'F'))
-    #         total = obj.objects.filter(user=request.user, date__gte=start_date,
-    #             date__lte=end_date).aggregate(total=Sum('value'))['total']
-    #         data.append(total)
-
-    
-    # elif summary_type == 'year1':
-
-    #     for i in range(1,13):
-    #         start_date = date(today.year, i, 1)
-    #         # tutaj trzeba sprawdzic czy rok przestepny
-    #         if i == 2:
-    #             end_date = date(today.year, i, 28)
-    #         elif i in month_days_30:
-    #             end_date = date(today.year, i, 30)
-
-    #         else:
-    #             end_date = date(today.year, i, 31)
-
-    #         print(f"{start_date} - {end_date}")
-    #         labels.append(date_format(start_date, 'F'))
-    #         total = obj.objects.filter(user=request.user, date__gte=start_date,
-    #             date__lte=end_date).aggregate(total=Sum('value'))['total']
-    #         data.append(total)
-
-    #         # print(start_date)
-    #         # print(end_date)
-
-    #         # total_income_monthly = Income.objects\
-    #         #     .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-    #         #     .aggregate(total=Sum('value'))['total']
-
-    #         # total_outcome_monthly = Outcome.objects\
-    #         #     .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-    #         #     .aggregate(total=Sum('value'))['total']
-
-    #         # total_income_monthly_sum.append(total_income_monthly)
-    #         # total_outcome_monthly_sum.append(total_outcome_monthly)
-
-    #         # daty.append(start_date)
-    #         # daty.append(end_date)
-
-    #         # print(daty)
-    #         # print(total_income_monthly_sum)
-    #         # print(total_outcome_monthly_sum)
-            
-        
-    #         # start_date = date.today().replace(day=1)
-    #         # end_date = get_last_date_of_month(today.year, today.month)
-    #         # print("Miesiace")
-    #         # print(start_date)
-    #         # print(end_date)
-    #         # print("Koniec")
-    
-    # # elif summary_type == 'all':
-    # #     last_object = obj.objects.filter(user=request.user).order_by('-date').first()
-    # #     first_object = obj.objects.filter(user=request.user).order_by('-date').last()
-    # #     start_date = first_object.date
-
-    # #     end_date = last_object.date
-    # #     print("Miesiace")
-    # #     print(start_date)
-    # #     print(end_date)
-    # #     print("Koniec")
-
-    # else:
-    #     return JsonResponse({'error': 'Please specify summary_type parameter to be either current_period or year_overview'})
-    
-    # # labels = []
-    # data = []
-    # for obj_type in obj_types.choices:
-    #     labels.append(obj_type[1])
-    #     total = obj.objects.filter(user=request.user, type=obj_type[0], date__gte=start_date,
-    #         date__lte=end_date).aggregate(total=Sum('value'))['total']
-    #     total = 0 if total is None else total
-
-    #     data.append(total)
-
-    # print("osotatecznie")
-    # print(current_goal_jar1)
 
     if user_saving_method == 'METODA 6 SŁOIKÓW':
         return JsonResponse({
@@ -2486,10 +1327,8 @@ def generate_PDF(request):
         obj = Balance
         raport_of_what = 'kont'
 
-    print(start_date)
-    print(end_date)
-
-    
+    # print(start_date)
+    # print(end_date)
 
     if get_what != 'balances':
         if start_date == '' or end_date == '':
@@ -2520,8 +1359,6 @@ def generate_PDF(request):
     textob.setTextOrigin(inch, inch)
     textob.setFont('Verdana', 14)
 
-
-
     # Add some lines of text
     lines = []
 
@@ -2550,14 +1387,11 @@ def generate_PDF(request):
         
         textob.textLine(f'Wykaz {raport_of_what} {start_date_label} - {end_date_label}')
 
-
-    print(lines)
-
+    # print(lines)
 
     textob.textLine(" ")
     textob.textLine(" ")
 
-    # Loop
     for line in lines:
         textob.textLine(line)
 
@@ -2592,10 +1426,9 @@ def generate_CSV(request):
     print(start_date)
     print(end_date)
 
-    # locale.setlocale(locale.LC_ALL, '')
-    # DELIMITER = ';' if locale.localeconv()['decimal_point'] == ',' else ','
+    locale.setlocale(locale.LC_ALL, '')
+    DELIMITER = ';' if locale.localeconv()['decimal_point'] == ',' else ','
 
-    
 
     if start_date == '' or end_date == '':
         start_date = today.replace(day=1)
@@ -2606,9 +1439,9 @@ def generate_CSV(request):
     response['Content-Disposition'] = f'attachment; filename=Raport_CSV{today}.csv'
 
     # Create a CSV writer
-    # trzeba sprawdzic w polsce
-    # writer = csv.writer(response, delimiter=DELIMITER)
-    writer = csv.writer(response)
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=DELIMITER)
+    # writer = csv.writer(response)
 
     if get_what == 'balances':
         objects = obj.objects.filter(user=request.user)
@@ -2649,9 +1482,6 @@ def raport_form(request):
     raport_object = request.GET.get('raport_object')
     context = {'raport_object': raport_object}
     return render(request, 'finances/raport_form.html', context)
-
-def slchart(request):
-    return render(request, 'finances/sleep_chart.html')
 
 @login_required(login_url='accounts:login')
 def stats(request):

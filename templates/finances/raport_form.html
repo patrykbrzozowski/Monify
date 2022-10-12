@@ -1,7 +1,6 @@
 {% block content %}
 
-<div>
-
+  <div>
     <div class="flex justify-between items-center pb-3 mt-5">
       <p class="text-2xl font-bold">Generuj raport</p>
       <div class="cursor-pointer z-50" @click="showModal = false">
@@ -11,108 +10,91 @@
       </div>
     </div>
     {% if raport_object == 'incomes' or raport_object == 'outcomes' %}
-    <div class="">
-      <div class="mb-1 rounded mx-10 grid grid-cols-1" >
-        <label for="start_date" class="my-3 text-gray-600">Data początkowa:</label>
-        <input type="date" class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" id="start_date" name="start_date">
+      <div class="">
+        <div class="mb-1 rounded mx-10 grid grid-cols-1" >
+          <label for="start_date" class="my-3 text-gray-600">Data początkowa:</label>
+          <input type="date" class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" id="start_date" name="start_date">
+        </div>
+        <div class="mb-1 rounded mx-10 grid grid-cols-1" >
+          <label for="end_date" class="my-3 text-gray-600">Data końcowa:</label>
+          <input type="date" class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" id="end_date" name="end_date">
+        </div>
       </div>
-      <div class="mb-1 rounded mx-10 grid grid-cols-1" >
-        <label for="end_date" class="my-3 text-gray-600">Data końcowa:</label>
-        <input type="date" class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" id="end_date" name="end_date">
-      </div>
-    </div>
     {% endif %}
 
-                  <!--Footer-->
-                  <div class="mb-1 rounded mx-10 grid grid-cols-1">
-                    <button type="submit" class="my-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white " id="download_PDF">Pobierz PDF</button>
-                    <button type="submit" class="my-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white " id="download_CSV">Pobierz CSV</button>
-                    <!-- <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showConfirmationModal = false">
-                      Zamknij
-                    </button> -->
-                  </div>
-      <!-- <div class="modal-footer">
-        
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="showModal = false">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" @click="showModal = false">Save</button>
-      </div> -->
-      
+    <!--Footer-->
+    <div class="mb-1 rounded mx-10 grid grid-cols-1">
+      <button type="submit" class="my-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white " id="download_PDF">Pobierz PDF</button>
+      <button type="submit" class="my-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white " id="download_CSV">Pobierz CSV</button>
+    </div>
   </div>
-  <!-- </div> -->
 
- 
 {% endblock %}
 
 {% block js %}
 {% if raport_object == 'incomes' %}
 <script>
    $('#download_PDF').on('click', function() {
-    console.log("Dowload PDF")
-        let start_date = $('#start_date').val()
-        let end_date = $('#end_date').val()
-        console.log(start_date)
-        console.log(end_date)
+    // console.log("Dowload PDF")
+      let start_date = $('#start_date').val()
+      let end_date = $('#end_date').val()
+        // console.log(start_date)
+        // console.log(end_date)
         // $.get(`/finances/generate_PDF?get_what=incomes`);
-        window.location = `/finances/generate_PDF?get_what=incomes&start_date=${start_date}&end_date=${end_date}`;
+      window.location = `/finances/generate_PDF?get_what=incomes&start_date=${start_date}&end_date=${end_date}`;
     });
 
     $('#download_CSV').on('click', function() {
-    console.log("Dowload CSV")
-        let start_date = $('#start_date').val()
-        let end_date = $('#end_date').val()
-        console.log(start_date)
-        console.log(end_date)
+    // console.log("Dowload CSV")
+      let start_date = $('#start_date').val()
+      let end_date = $('#end_date').val()
+        // console.log(start_date)
+        // console.log(end_date)
         // $.get(`/finances/generate_PDF?get_what=incomes`);
-        window.location = `/finances/generate_CSV?get_what=incomes&start_date=${start_date}&end_date=${end_date}`;
+      window.location = `/finances/generate_CSV?get_what=incomes&start_date=${start_date}&end_date=${end_date}`;
     });
 </script>
 {% elif raport_object == 'outcomes' %}
 <script>
   $('#download_PDF').on('click', function() {
-   console.log("Dowload PDF")
-       let start_date = $('#start_date').val()
-       let end_date = $('#end_date').val()
-       console.log(start_date)
-       console.log(end_date)
+  //  console.log("Dowload PDF")
+      let start_date = $('#start_date').val()
+      let end_date = $('#end_date').val()
+      //  console.log(start_date)
+      //  console.log(end_date)
        // $.get(`/finances/generate_PDF?get_what=incomes`);
-       window.location = `/finances/generate_PDF?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`;
+      window.location = `/finances/generate_PDF?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`;
    });
 
    $('#download_CSV').on('click', function() {
-    console.log("Dowload CSV")
-        let start_date = $('#start_date').val()
-        let end_date = $('#end_date').val()
-        console.log(start_date)
-        console.log(end_date)
+    // console.log("Dowload CSV")
+      let start_date = $('#start_date').val()
+      let end_date = $('#end_date').val()
+        // console.log(start_date)
+        // console.log(end_date)
         // $.get(`/finances/generate_PDF?get_what=incomes`);
-        window.location = `/finances/generate_CSV?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`;
+      window.location = `/finances/generate_CSV?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`;
     });
 </script>
 {% else %}
 <script>
   $('#download_PDF').on('click', function() {
-   console.log("Dowload PDF")
-       let start_date = $('#start_date').val()
-       let end_date = $('#end_date').val()
-       console.log(start_date)
-       console.log(end_date)
+  //  console.log("Dowload PDF")
+      let start_date = $('#start_date').val()
+      let end_date = $('#end_date').val()
+      //  console.log(start_date)
+      //  console.log(end_date)
        // $.get(`/finances/generate_PDF?get_what=incomes`);
-       window.location = `/finances/generate_PDF?get_what=balances`;
+      window.location = `/finances/generate_PDF?get_what=balances`;
    });
 
    $('#download_CSV').on('click', function() {
-    console.log("Dowload CSV")
-        let start_date = $('#start_date').val()
-        let end_date = $('#end_date').val()
-        console.log(start_date)
-        console.log(end_date)
+      let start_date = $('#start_date').val()
+      let end_date = $('#end_date').val()
         // $.get(`/finances/generate_PDF?get_what=incomes`);
-        window.location = `/finances/generate_CSV?get_what=balances`;
+      window.location = `/finances/generate_CSV?get_what=balances`;
     });
 </script>
 {% endif %}
-
 
 {% endblock %}

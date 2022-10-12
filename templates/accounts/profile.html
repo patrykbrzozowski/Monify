@@ -1,19 +1,24 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% block content %}
 
 <div class="container">
-    
-    <div
+  <div
     class="flex flex-col mx-1 space-y-5 mt-5"
     hx-trigger="load, profileDataChanged from:body"
     hx-get="{% url 'accounts:get_profile_data' %}"
     hx-target="this"
     id="loadthis"
   ></div>
-  
-  
+
   <div class="flex my-6">
-    <button hx-get="{% url 'accounts:delete_all_data' %}" hx-target="#dialog1" @click="showConfirmationModal = true" class="mx-auto px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń wszystkie dane</button>
+    <button
+      hx-get="{% url 'accounts:delete_all_data' %}"
+      hx-target="#dialog1"
+      @click="showConfirmationModal = true"
+      class="mx-auto px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400"
+    >
+      Usuń wszystkie dane
+    </button>
   </div>
 </div>
 {% endblock %}
