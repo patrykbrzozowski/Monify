@@ -2,12 +2,9 @@
 {% load static %}
   {% block content %}
     <section id="hero">
-      <div
-        class="container flex flex-row w-full bg-gradient-to-b from-white to-purple-400 min-h-screen lg:min-h-[90vh] my-16"
-      >
-        <div class="container flex flex-col md:flex-row mx-auto my-auto">
+        <div class="flex flex-col md:flex-row mx-auto w-full bg-gradient-to-b from-white to-purple-400 min-h-screen lg:min-h-[91vh]">
           <div
-            class="flex flex-col mx-auto mb-20 md:mb-32 space-y-8 md:mt-0 mt-20 md:space-y-12 md:w-1/2 items-center"
+            class="flex flex-col mx-auto my-auto space-y-12 items-center"
           >
             <h1
               class="max-w-md text-center text-4xl md:text-5xl font-bold text-gray-600"
@@ -16,18 +13,18 @@
             </h1>
             <a
               href="{% url 'accounts:register' %}"
-              class="border-2 border-transparent max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500"
+              class="border-2 border-transparent mt-auto max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500"
               >Załóż darmowe konto</a
             >
           </div>
           <div
-            class="flex flex-col mb-20 md:mb-32 space-y-12 md:w-1/2 items-center"
+            class="flex flex-col mx-auto my-auto md:space-y-12 items-center"
           >
-            <img src="{% static 'img/logo.png' %}" class="mx-auto w-72 h-72" alt="" />
+            <img src="{% static 'img/purplelogo.png' %}" class="mx-auto w-80 h-72" alt="" />
           </div>
         </div>
-      </div>
     </section>
+
     <section>
       <div
         class="container flex flex-col md:flex-row w-11/12 my-20 md:my-32 gap-10 mx-auto"
@@ -73,34 +70,29 @@
       </div>
     </section>
 
-    <section id="aaa">
-      <div
-        class="container flex flex-row w-full bg-gradient-to-t from-white to-purple-400 min-h-[80vh] my-0"
-      >
-        <div class="container flex flex-col md:flex-row mx-auto my-auto">
+    <section id="saving-methods">
+        <div class="flex flex-col md:flex-row mx-auto w-full bg-gradient-to-b from-white to-purple-400 min-h-screen lg:min-h-[90vh]">
           <div
-            class="flex flex-col mx-auto mb-20 md:mb-32 space-y-8 md:mt-10 mt-20 md:space-y-12 md:w-1/2 items-center"
+            class="flex flex-col mx-auto my-auto space-y-12 items-center"
           >
             <h1
               class="max-w-md text-center text-4xl md:text-5xl font-bold text-gray-600"
             >
-              Naucz się zarządzać swoim budżetem dzięki metodzie 6 słoików lub
-              metodzie 50/30/20
+            Naucz się zarządzać swoim budżetem dzięki metodzie 6 słoików lub
+            metodzie 50/30/20
             </h1>
             <a
               href="{% url 'website:methods_info' %}"
-              class="border-2 border-transparent max-w-md text-xl p-4 px-20 md:px-24 pt-2 my-3 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500"
+              class="border-2 border-transparent mt-auto max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500"
               >Dowiedz się więcej</a
             >
-            <!-- <a href="" class="max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto">Załóż darmowe konto</a> -->
           </div>
           <div
-            class="flex flex-col mx-7 mb-20 md:mt-10 md:mb-32 space-y-12 md:w-1/2 items-center"
+            class="flex flex-col mx-7 my-auto space-y-12 md:w-1/2 items-center"
           >
             <img src="{% static 'img/ekranik.png' %}" class="mx-auto" alt="" />
           </div>
         </div>
-      </div>
     </section>
 
     <section>
@@ -137,50 +129,34 @@
             właściwych nawyków finansowych oraz pozwala na łatwe kontrolowanie swoich wydatków.
           </p>
         </div>
-        <!-- <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                <h1>dsadsda dsdasd</h1>
-                <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure, ipsam.</h1>
-                <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure, ipsam.</h1>
-            </div> -->
       </div>
     </section>
 
-    <section id="bbb">
-      <div
-        class="container flex flex-row w-full bg-gradient-to-b from-white to-purple-400 min-h-[80vh] my-0"
-      >
-        <div class="container flex flex-col md:flex-row mx-auto my-auto">
+    <section id="additional-info">
+        <div class="flex flex-col md:flex-row mx-auto w-full bg-gradient-to-b from-white to-purple-400 min-h-screen lg:min-h-[90vh]">
           <div
-            class="flex flex-col mx-auto mb-20 space-y-8 md:mt-0 mt-20 md:space-y-10 items-center"
+            class="flex flex-col mx-auto my-5 md:my-auto space-y-12 items-center"
           >
-            <h1
-              class="text-center text-4xl md:text-5xl font-bold text-gray-600"
-            >
-              Zarządzanie pieniędzmi może być łatwe
-            </h1>
-            <h1 class="max-w-lg text-center text-2xl text-gray-600">
-              Dzięki Monify możesz nauczyć się zadządzać swoimi finansami oraz śledzić swoje przychody i monitorować wydatki
-            </h1>
-            <a href="{% url 'accounts:register' %}" class="border-2 border-transparent max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Załóż darmowe konto</a>
-            <h1 class="max-w-lg text-center text-2xl text-gray-600">
-                lub
-            </h1>
-            <a href="{{ app_info }}" class="border-2 border-transparent max-w-lg text-lg md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Sprawdź jak działa Monify</a>
+          <h1
+          class="text-center text-4xl md:text-5xl font-bold text-gray-600"
+        >
+          Zarządzanie pieniędzmi może być łatwe
+        </h1>
+        <h1 class="max-w-lg text-center text-2xl text-gray-600">
+          Dzięki Monify App możesz nauczyć się zadządzać swoimi finansami oraz śledzić swoje przychody i monitorować wydatki
+        </h1>
+        <a href="{% url 'accounts:register' %}" class="border-2 border-transparent max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Załóż darmowe konto</a>
+        <h1 class="max-w-lg text-center text-2xl text-gray-600">
+            lub
+        </h1>
+        <a href="{{ app_info }}" class="border-2 border-transparent max-w-lg text-lg md:text-2xl p-4 px-14 md:px-20 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Sprawdź jak działa Monify App</a>
           </div>
-          <!-- <div
-            class="flex flex-col mb-20 md:mb-32 space-y-12 md:w-1/2 items-center"
-          >
-            <img src="logobig.png" class="mx-auto" alt="" />
-          </div> -->
+          
         </div>
-      </div>
     </section>
 
     <section>
-      <div class="container">
+      <div class="container mx-auto">
         <div
           x-data="{swiper: null}"
           x-init="swiper = new Swiper($refs.container, {
@@ -257,7 +233,7 @@
                   <div class="flex-shrink-0">
                     <img
                       class="h-52 w-full object-cover hover:cursor-pointer"
-                      src="{% static 'img/logo.png' %}"
+                      src="{% static 'img/purplelogo.png' %}"
                       alt=""
                     />
                   </div>
@@ -292,20 +268,18 @@
       </div>
     </section>
   {% endblock %}
-    {% block js %}
-    <script>
-        $('.img-container img').each(function(index) {
-            $(this).on("click", function ()  {
-                $('.popup-image').css("display", "block");
-                $('.popup-image img').attr("src", $(this).attr('src'))
-            });
-        });
+  {% block js %}
+  <script>
+      $('.img-container img').each(function(index) {
+          $(this).on("click", function ()  {
+              $('.popup-image').css("display", "block");
+              $('.popup-image img').attr("src", $(this).attr('src'))
+          });
+      });
 
-        $('.popup-image span').click(function () {
-            $('.popup-image').css("display", "none");
-        });
-
-
-    </script>
-    {% endblock %}
+      $('.popup-image span').click(function () {
+          $('.popup-image').css("display", "none");
+      });
+  </script>
+  {% endblock %}
 

@@ -1,7 +1,5 @@
 {% block content %}
   <div class="pb-3 mt-5">
-    <h1>{{ delete_what }} {{ object.pk }}</h1>
-    
     <form hx-post="{{ request.path }}" hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' @submit.prevent="showConfirmationModal = false">
       {% if model == "konto" %}
       <p>Na pewno usunąć {{ model }} "{{ model_name }}" ?</p>
@@ -11,6 +9,7 @@
       <p>Na pewno usunąć "{{ model_name }}" {{ model_date|date:"d/m/y" }} (<span class="text-green-500">{{ model_value }} {{ user_currency }}</span>) ?</p>
       {% elif model == "all_data" %}
       <p>Na pewno usunąć wszystkie dane?</p>
+      <!-- <p></p> -->
       {% endif %}
       {{ form }}
       <div class="flex justify-end pt-2 my-3">

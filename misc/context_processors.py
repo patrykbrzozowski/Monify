@@ -1,7 +1,6 @@
 from datetime import datetime
 from accounts.models import Account
 
-
 def add_custom_context(request):
     return {
         'app_name': request.resolver_match.app_name,

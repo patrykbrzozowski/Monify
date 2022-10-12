@@ -1,28 +1,26 @@
-<!-- <div class="grid grid-rows-1"> -->
-  <div>
-    <div class="flex flex-col">
-      <h1 class="text-5xl text-gray-700 mt-10 mx-auto">Profil</h1>
-      <h1 class="text-8xl mt-10 mx-auto">
-        <i class="font-bold fa-solid fa-circle-user text-gray-300"></i>
-      </h1>
-      <p class="text-3xl mt-4 mx-auto">
-        {{ user.first_name }} {{ user.last_name }}
-      </p>
-      <p class="text-sm mt-2 mx-auto">{{ user.email }}</p>
-      <div class="flex my-4">
-        <button
-      class="mx-auto text-base text-blue-500"
-      @click="showModal = true"
-      type="button"
-      hx-get="{% url 'accounts:edit_profile' %}"
-      hx-target="#dialog"
-    >
-      Zmień dane personalne
-    </button>
-      </div>
-      
+<div>
+  <div class="flex flex-col">
+    <h1 class="text-5xl text-gray-700 mt-10 mx-auto">Profil</h1>
+    <h1 class="text-8xl mt-10 mx-auto">
+      <i class="font-bold fa-solid fa-circle-user text-gray-300"></i>
+    </h1>
+    <p class="text-3xl mt-4 mx-auto">
+      {{ user.first_name }} {{ user.last_name }}
+    </p>
+    <p class="text-sm mt-2 mx-auto">{{ user.email }}</p>
+    <div class="flex my-4">
+      <button
+        class="mx-auto text-base text-blue-500"
+        @click="showModal = true"
+        type="button"
+        hx-get="{% url 'accounts:edit_profile' %}"
+        hx-target="#dialog"
+      >
+        Zmień dane profilowe
+      </button>
     </div>
   </div>
+</div>
 <div class="w-4/6 md:w-auto flex flex-row space-x-5 mx-auto">
   <div>
     <p class="text-lg md:text-xl md:mx-auto">
@@ -31,7 +29,7 @@
   </div>
   <div class="">
     <p class="text-lg border border-gray-400 rounded-xl hover:bg-gray-300">
-        <button
+      <button
         class="p-2 text-base"
         @click="showModal = true"
         type="button"
@@ -63,4 +61,3 @@
     </p>
   </div>
 </div>
-<!-- </div> -->

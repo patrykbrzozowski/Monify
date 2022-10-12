@@ -14,7 +14,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile_info'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('delete_all_data/', views.delete_all_data, name='delete_all_data'),
-
+    path('get_profile_data/', views.get_profile_data, name='get_profile_data'),
     path('password_reset/',
         auth_views.PasswordResetView.as_view(template_name='accounts/password_reset.html',
         email_template_name = 'accounts/password_reset_email.html',
@@ -30,6 +30,4 @@ urlpatterns = [
         name='password_reset_confirm'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'),
         name='password_reset_complete'),
-
-    path('get_profile_data/', views.get_profile_data, name='get_profile_data'),
 ]
