@@ -9,26 +9,21 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'email', 'password1', 'password2']
 
-    # first_name = forms.Field(widget=forms.TextInput(attrs={
-    #     'class': 'form-control form-control-user',
-    #     'placeholder': 'First Name'
-    # }))
-    # last_name = forms.Field(widget=forms.TextInput(attrs={
-    #     'class': 'form-control form-control-user',
-    #     'placeholder': 'Last Name'
-    # }))
-    # email = forms.Field(widget=forms.EmailInput(attrs={
-    #     'class': 'form-control form-control-user',
-    #     'placeholder': 'Email'
-    # }))
-    # password1 = forms.Field(widget=forms.PasswordInput(attrs={
-    #     'class': 'form-control form-control-user',
-    #     'placeholder': 'Password'
-    # }), label='Password')
-    # password2 = forms.Field(widget=forms.PasswordInput(attrs={
-    #     'class': 'form-control form-control-user',
-    #     'placeholder': 'Confirm Password'
-    # }), label='Confirm Password')
+    first_name = forms.Field(widget=forms.TextInput(attrs={
+        'required': 'required'
+    }))
+    last_name = forms.Field(widget=forms.TextInput(attrs={
+        'required': 'required'
+    }))
+    email = forms.Field(widget=forms.EmailInput(attrs={
+        'required': 'required'
+    }))
+    password1 = forms.Field(widget=forms.PasswordInput(attrs={
+        'required': 'required'
+    }))
+    password2 = forms.Field(widget=forms.PasswordInput(attrs={
+        'required': 'required'
+    }))
 
     def is_valid(self):
         is_valid = super().is_valid()
@@ -47,12 +42,38 @@ class CustomUserCreationForm(UserCreationForm):
         
         return instance
 
-    # def clean_email(self):
-    #     if User.objects.filter(email=self.cleaned_data['email']).exists():
-    #         messages.warning(self.request, 'the given email is already registered')
-    #         raise forms.ValidationError("the given email is already registered")
-    #     return self.cleaned_data['email']
+    def clean_password1(self):
+        if not self.cleaned_data['password1']:
+            raise forms.ValidationError("Enter a password.")
+        return self.cleaned_data['password1']
 
+    def clean_password2(self):
+        if not self.cleaned_data['password2']:
+            raise forms.ValidationError("Enter your password (again)")
+        return self.cleaned_data['password2']
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        password1 = cleaned_data['password1']
+        password2 = cleaned_data['password2']
+
+        if len(password1) < 8:
+            self.add_error('password1', 'Hasło musi zawierać co najmniej 8 znaków.')
+
+        if password1.isdigit():
+            self.add_error('password1', 'Hasło nie może się składać z samych cyfr.')
+
+        # check for 2 digits
+        if sum(p.isdigit() for p in password1) < 1:
+            self.add_error('password1', 'Hasło musi zawierać co najmniej 1 cyfrę.')
+
+        if not any(p.isupper() for p in password1):
+            self.add_error('password1', 'Hasło musi zawierać co najmniej 1 dużą literę.')
+
+        if password1 and password2:
+            if password1 != password2:
+                self.add_error('password1', 'Hasła nie są identyczne.')
+        return cleaned_data
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:

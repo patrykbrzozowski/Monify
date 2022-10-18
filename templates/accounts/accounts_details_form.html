@@ -4,7 +4,6 @@
   id="formval"
   hx-post="{{ request.path }}"
   hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
-  class=""
   @submit.prevent="showModal = false"
 >
   <div class="flex justify-between items-center pb-3 mt-5">

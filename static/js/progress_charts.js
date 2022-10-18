@@ -19,7 +19,6 @@ function alpineInstance() {
                 .then(response => response.json())
                 .then(data => this.progress_data = data)
       },
-      
 
       get filteredYearData() {
         const start = this.pageNumber * this.size,
@@ -72,5 +71,4 @@ function alpineInstance() {
         this.pageNumber = index;
       },
     };
-    
 }

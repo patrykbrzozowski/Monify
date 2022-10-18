@@ -29,7 +29,7 @@
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}" sizes="16x16">
     <!-- favicon-32x32.png - For Safari on Mac OS. -->
     <link rel="icon" type="image/png" href="{% static 'img/icon32.png' %}" sizes="32x32">
-    <title>Monify App - kontroluj mądrze swoje wydatki</title>
+    <title>Monify-App - kontroluj mądrze swoje wydatki</title>
 
     {% block head %}
     {% endblock %}
@@ -47,7 +47,7 @@
         >
           <div class="flex justify-between">
             {% url 'finances:dashboard' as dashboard %}
-            <a href="{{ dashboard }}" class="mx-auto"><img src="{% static 'img/whitelogo.png' %}" class="w-28 h-24" alt="" /></a>
+            <a href="{{ dashboard }}" class="mx-auto"><img src="{% static 'img/whitelogo.png' %}" class="w-28 h-24" alt="White logo Monify-App" /></a>
             <button
               class="p-2 focus:outline-none focus:bg-purple-700 hover:bg-purple-700 rounded-md lg:hidden"
               @click="open = false"
@@ -271,7 +271,7 @@
                     </a>
 
                     <a
-                      href="{% url 'website:info' %}"
+                      href="{% url 'accounts:info' %}"
                       class="block px-4 py-2 text-left text-sm hover:bg-gray-200"
                     >
                       <i class="mr-1 fa-solid fa-circle-info"></i>
@@ -306,7 +306,6 @@
             <div id="dialog"></div>
           </div>
         </div>
-
 
          <!--Overlay-->
          <div id="modal1" class="overflow-auto min-h-screen" style="background-color: rgba(0,0,0,0.5)" x-show="showConfirmationModal" :class="{ 'absolute inset-0 z-10 flex items-center justify-center': showConfirmationModal }">

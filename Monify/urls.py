@@ -1,3 +1,4 @@
+from django.conf.urls import handler404
 from django.contrib import admin
 from django.urls import path, include
 
@@ -7,3 +8,5 @@ urlpatterns = [
     path('finances/', include('finances.urls')),
     path('accounts/', include('accounts.urls')),
 ]
+
+handler404 = 'website.views.error_404'

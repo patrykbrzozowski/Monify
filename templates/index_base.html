@@ -29,7 +29,7 @@
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}" sizes="16x16">
     <!-- favicon-32x32.png - For Safari on Mac OS. -->
     <link rel="icon" type="image/png" href="{% static 'img/icon32.png' %}" sizes="32x32">
-    <title>Monify App - kontroluj mądrze swoje wydatki</title>
+    <title>Monify-App - kontroluj mądrze swoje wydatki</title>
   </head>
   <body  x-data="{openMobileMenu: false}">
     <!-- Navbar -->
@@ -39,15 +39,15 @@
       <div class="flex items-center justify-between">
         <!-- Logo -->
         <div class="pt-1">
-            <a href="{{ index }}">
-                <img src="{% static 'img/purplelogo-mini.png' %}" class="ml-6 w-12 h-12" alt="" />
-            </a>
+          <a href="{{ index }}">
+            <img src="{% static 'img/purplelogo-mini.png' %}" class="ml-6 w-12 h-12" alt="Mini purple logo Monify-App" />
+          </a>
         </div>
         <!-- Button -->
         <div>
-            <button class="md:hidden" @click="openMobileMenu = !openMobileMenu">
-                <i class="fa-solid fa-bars block text-xl font-bold" :class="{'fa-bars': openMobileMenu === false, 'fa-xmark': openMobileMenu === true}"></i>
-            </button>
+          <button class="md:hidden" @click="openMobileMenu = !openMobileMenu">
+            <i class="fa-solid fa-bars block text-xl font-bold" :class="{'fa-bars': openMobileMenu === false, 'fa-xmark': openMobileMenu === true}"></i>
+          </button>
         </div>
         <div class="hidden md:flex space-x-6 mx-5 text-gray-400">
           <a href="{{ index }}" class="hover:text-gray-600 hover:underline hover:underline-offset-8 my-auto{% if page_path == index %} text-gray-600 underline underline-offset-8{% endif %}">Strona główna</a>
@@ -55,30 +55,28 @@
           <a
             href="{% url 'accounts:login' %}"
             class="hidden md:block p-3 px-6 pt-2 text-white bg-purple-400 rounded-full hover:bg-purple-500 baseline text-sm"
-            >Zaloguj się</a
-          >
+          >Zaloguj się</a>
         </div>
       </div>
 
       <!-- Mobile Menu -->
       <div class="md:hidden" x-show="openMobileMenu">
         <div class="absolute flex flex-col items-center self-end py-8 mt-0 space-y-6 font-bold bg-white sm:w-full left-0 right-0 drop-shadow-md text-gray-600">
-            <a href="{{ index }}" class="hover:text-gray-400 my-auto">Strona główna</a>
-            <a href="{{ app_info }}" class="hover:text-gray-400 my-auto">Jak działa</a>
-            <a
-              href="{% url 'accounts:login' %}"
-              class="p-3 px-6 pt-2 text-white bg-purple-400 rounded-full hover:bg-purple-500 baseline text-sm"
-              >Zaloguj się</a
-            >
+          <a href="{{ index }}" class="hover:text-gray-400 my-auto">Strona główna</a>
+          <a href="{{ app_info }}" class="hover:text-gray-400 my-auto">Jak działa</a>
+          <a
+            href="{% url 'accounts:login' %}"
+            class="p-3 px-6 pt-2 text-white bg-purple-400 rounded-full hover:bg-purple-500 baseline text-sm"
+          >Zaloguj się</a>
         </div>
-    </div>
+      </div>
     </nav>
     {% block content %}
     {% endblock %}
     
     <footer class="bg-purple-400 flex items-center justify-between p-5">
       <span class="text-sm text-white text-center mx-auto"
-        >© {% if today_year == 2022 %}2022 {% else %}2022-{{ today_year }} {% endif %} <a href="" class="hover:underline">Monify App™</a>. All Rights
+      >© {% if today_year == 2022 %}2022 {% else %}2022-{{ today_year }} {% endif %} <a href="" class="hover:underline">Monify-App™</a>. All Rights
         Reserved.
       </span>
     </footer>

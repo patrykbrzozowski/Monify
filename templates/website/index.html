@@ -1,6 +1,6 @@
 {% extends 'index_base.html' %}
 {% load static %}
-  {% block content %}
+{% block content %}
     <section id="hero">
         <div class="flex flex-col md:flex-row mx-auto w-full bg-gradient-to-b from-white to-purple-400 min-h-screen lg:min-h-[91vh]">
           <div
@@ -20,7 +20,7 @@
           <div
             class="flex flex-col mx-auto my-auto md:space-y-12 items-center"
           >
-            <img src="{% static 'img/purplelogo.png' %}" class="mx-auto w-80 h-72" alt="" />
+            <img src="{% static 'img/purplelogo.png' %}" class="mx-auto w-80 h-72" alt="Purple logo Monify-App" />
           </div>
         </div>
     </section>
@@ -90,7 +90,7 @@
           <div
             class="flex flex-col mx-7 my-auto space-y-12 md:w-1/2 items-center"
           >
-            <img src="{% static 'img/ekranik.png' %}" class="mx-auto" alt="" />
+            <img src="{% static 'img/ekranik.png' %}" class="mx-auto" alt="Laptop screen image" />
           </div>
         </div>
     </section>
@@ -114,7 +114,7 @@
             Metoda 6 słoików polega na podziale miesięcznego dochodu na 6
             części nazywanych "słoikami". W momencie, gdy dostajemy wypłatę
             dzielimy ją na 6 części i odpowiednio umieszczamy w tytułowych
-            "słoikach" lub na oddzielnych kontach bankowych.
+            "słoikach" lub na oddzielnych kontach bankowych. <a class="text-blue-600 hover:underline" href="{% url 'website:methods_info' %}">Dowiedz się więcej.</a>
           </p>
         </div>
         <div class="border border-gray-400 rounded-lg shadow-xl p-10 mx-auto md:w-1/2">
@@ -126,7 +126,7 @@
           <p>
             Metoda 50/30/20 polega na podziale miesięcznego dochodu na 3
             części nazywanych, które odpowiednio stanowią 50%, 30% oraz 20% naszych dochodów. Metoda ta pozwala na wyrobienie
-            właściwych nawyków finansowych oraz pozwala na łatwe kontrolowanie swoich wydatków.
+            właściwych nawyków finansowych oraz pozwala na łatwe kontrolowanie swoich wydatków. <a class="text-blue-600 hover:underline" href="{% url 'website:methods_info' %}">Dowiedz się więcej.</a>
           </p>
         </div>
       </div>
@@ -143,13 +143,13 @@
           Zarządzanie pieniędzmi może być łatwe
         </h1>
         <h1 class="max-w-lg text-center text-2xl text-gray-600">
-          Dzięki Monify App możesz nauczyć się zadządzać swoimi finansami oraz śledzić swoje przychody i monitorować wydatki
+          Dzięki Monify-App możesz nauczyć się zadządzać swoimi finansami oraz śledzić swoje przychody i monitorować wydatki
         </h1>
         <a href="{% url 'accounts:register' %}" class="border-2 border-transparent max-w-md text-xl md:text-2xl p-4 px-20 md:px-24 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Załóż darmowe konto</a>
         <h1 class="max-w-lg text-center text-2xl text-gray-600">
             lub
         </h1>
-        <a href="{{ app_info }}" class="border-2 border-transparent max-w-lg text-lg md:text-2xl p-4 px-14 md:px-20 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Sprawdź jak działa Monify App</a>
+        <a href="{{ app_info }}" class="border-2 border-transparent max-w-lg text-lg md:text-2xl p-4 px-14 md:px-20 pt-2 text-gray-600 bg-purple-100 rounded-full baseline md:mx-0 mx-auto hover:border-2 hover:border-purple-500">Sprawdź jak działa Monify-App</a>
           </div>
           
         </div>
@@ -182,24 +182,6 @@
             })"
           class="img-container relative w-10/12 mx-auto flex flex-row my-16"
         >
-          <div class="absolute inset-y-0 left-0 z-10 flex items-center">
-            <button
-              @click="swiper.slidePrev()"
-              class="bg-white -ml-2 lg:-ml-4 flex justify-center items-center w-10 h-10 rounded-full shadow focus:outline-none"
-            >
-              <svg
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="chevron-left w-6 h-6"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-            </button>
-          </div>
 
           <div class="swiper" x-ref="container">
             <div class="swiper-wrapper">
@@ -209,7 +191,7 @@
                   <div class="flex-shrink-0">
                     <img
                       class="h-52 w-full object-cover hover:cursor-pointer"
-                      src="{% static 'img/aplik.png' %}"
+                      src="{% static 'img/app1.png' %}"
                       alt=""
                     />
                   </div>
@@ -221,7 +203,7 @@
                   <div class="flex-shrink-0">
                     <img
                       class="h-52 w-full object-cover hover:cursor-pointer"
-                      src="{% static 'img/aplik.png' %}"
+                      src="{% static 'img/app2.png' %}"
                       alt=""
                     />
                   </div>
@@ -233,42 +215,94 @@
                   <div class="flex-shrink-0">
                     <img
                       class="h-52 w-full object-cover hover:cursor-pointer"
-                      src="{% static 'img/purplelogo.png' %}"
+                      src="{% static 'img/app3.png' %}"
                       alt=""
                     />
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div class="absolute inset-y-0 right-0 z-10 flex items-center">
-            <button
-              @click="swiper.slideNext()"
-              class="bg-white -mr-2 lg:-mr-4 flex justify-center items-center w-10 h-10 rounded-full shadow focus:outline-none"
-            >
-              <svg
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="chevron-right w-6 h-6"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-            </button>
-          </div>
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/app4.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/app5.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/app6.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/app7.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/app8.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide p-4">
+                <div class="flex flex-col rounded shadow overflow-hidden">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-52 w-full object-cover hover:cursor-pointer"
+                      src="{% static 'img/app9.png' %}"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+
         </div>
         <div class="popup-image">
             <span>&times;</span>
-            <img src="{% static 'img/aplik.png' %}" alt="">
+            <img src="{% static 'img/app1.png' %}" alt="">
         </div>
       </div>
     </section>
-  {% endblock %}
-  {% block js %}
+{% endblock %}
+{% block js %}
   <script>
       $('.img-container img').each(function(index) {
           $(this).on("click", function ()  {
@@ -281,5 +315,5 @@
           $('.popup-image').css("display", "none");
       });
   </script>
-  {% endblock %}
+{% endblock %}
 

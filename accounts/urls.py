@@ -12,6 +12,7 @@ urlpatterns = [
     path('change_currency/', views.change_currency, name='change_currency'),
     path('change_saving_method/', views.change_saving_method, name='change_saving_method'),
     path('profile/', views.profile, name='profile_info'),
+    path('info/', views.info, name='info'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('delete_all_data/', views.delete_all_data, name='delete_all_data'),
     path('get_profile_data/', views.get_profile_data, name='get_profile_data'),

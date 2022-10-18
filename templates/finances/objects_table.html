@@ -21,9 +21,9 @@
         {% else %}
           <tr class="border-b  odd:bg-white even:bg-gray-200 hover:cursor-pointer hover:bg-gray-300" @click="showModal = true; scroll_to_form()" 
             {% if list_what == "Outcome" %}
-            hx-get="{% url 'finances:outcome_update' object.pk %}" 
+              hx-get="{% url 'finances:outcome_update' object.pk %}" 
             {% elif list_what == "Income" %}
-            hx-get="{% url 'finances:income_update' object.pk %}" 
+              hx-get="{% url 'finances:income_update' object.pk %}" 
             {% endif %}
             hx-target="#dialog">
             <th scope="row" class="px-6 py-4 font-medium text-gray-900">
@@ -57,225 +57,222 @@
   </table>
 
 
-{% if is_paginated %}
-<div class="w-full md:w-1/2 mx-auto py-6 flex justify-between items-center">
-    {% if page_obj.has_previous %}
-    <!--First Button-->
-    <button
-    {% if list_what == "Balance" %}
-    hx-get="{% url 'finances:balance_list_get' %}?page=1" 
-    {% elif list_what == "Outcome" %}
-    hx-get="{% url 'finances:outcome_list_get' %}?page=1" 
-    {% endif %}
-    hx-target="#loadthis"
-  >
-    <svg
-      class="h-8 w-8 text-purple-600"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <polygon points="19 20 9 12 19 4 19 20"></polygon>
-      <line x1="5" y1="19" x2="5" y2="5"></line>
-    </svg>
-  </button>
-  <!--Previous Button-->
-  <button
-    {% if list_what == "Balance" %}
-    hx-get="{% url 'finances:balance_list_get' %}?page={{ page_obj.previous_page_number }}" 
-    {% elif list_what == "Outcome" %}
-    hx-get="{% url 'finances:outcome_list_get' %}?page={{ page_obj.previous_page_number }}" 
-    {% endif %}
-    hx-target="#loadthis"
->
-  <svg
-    class="h-8 w-8 text-purple-600"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <polyline points="15 18 9 12 15 6"></polyline>
-  </svg>
-</button>
-    {% else %}
-    <button
-    class="disabled cursor-not-allowed text-gray-600"
-  >
-    <svg
-      class="h-8 w-8 text-purple-600"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <polygon points="19 20 9 12 19 4 19 20"></polygon>
-      <line x1="5" y1="19" x2="5" y2="5"></line>
-    </svg>
-  </button>
-  <!--Previous Button-->
-  <button
-  class="disabled cursor-not-allowed text-gray-600"
->
-  <svg
-    class="h-8 w-8 text-purple-600"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <polyline points="15 18 9 12 15 6"></polyline>
-  </svg>
-</button>
-    {% endif %}
-    {% for i in paginator.page_range|default_if_none:page_obj.paginator.get_elided_page_range %}
-        {% if page_obj.number == i %}
-        <button
-                class="px-3 py-2 rounded{% if page_obj.number == i %} bg-purple-600 text-white font-bold{% endif %}"
-                type="button"
-                {% if list_what == "Balance" %}
-                hx-get="{% url 'finances:balance_list_get' %}?page={{ i }}" 
-                {% elif list_what == "Outcome" %}
-                hx-get="{% url 'finances:outcome_list_get' %}?page={{ i }}" 
-                {% endif %}
-                
-                hx-target="#loadthis"
-              >
-                <span>{{ i }}</span>
-              </button>
+  {% if is_paginated %}
+    <div class="w-full md:w-1/2 mx-auto py-6 flex justify-between items-center">
+        {% if page_obj.has_previous %}
+          <!--First Button-->
+          <button
+          {% if list_what == "Balance" %}
+            hx-get="{% url 'finances:balance_list_get' %}?page=1" 
+          {% elif list_what == "Outcome" %}
+            hx-get="{% url 'finances:outcome_list_get' %}?page=1" 
+          {% endif %}
+          hx-target="#loadthis"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+            <polygon points="19 20 9 12 19 4 19 20"></polygon>
+            <line x1="5" y1="19" x2="5" y2="5"></line>
+            </svg>
+          </button>
+          <!--Previous Button-->
+          <button
+            {% if list_what == "Balance" %}
+            hx-get="{% url 'finances:balance_list_get' %}?page={{ page_obj.previous_page_number }}" 
+            {% elif list_what == "Outcome" %}
+            hx-get="{% url 'finances:outcome_list_get' %}?page={{ page_obj.previous_page_number }}" 
+            {% endif %}
+            hx-target="#loadthis"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+            <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
         {% else %}
-              {% if i == page_obj.paginator.ELLIPSIS %}
-                  <button
-                  class="px-3 py-2 rounded"
-                  type="button"
-                >
-                  <span>{{ i }}</span>
-                </button>
-                {% else %}
-                <button
-                class="px-3 py-2 rounded"
-                type="button"
-                {% if list_what == "Balance" %}
-                hx-get="{% url 'finances:balance_list_get' %}?page={{ i }}" 
-                {% elif list_what == "Outcome" %}
-                hx-get="{% url 'finances:outcome_list_get' %}?page={{ i }}" 
-                {% endif %}
-                hx-target="#loadthis"
-              >
-                <span>{{ i }}</span>
-              </button>
-              {% endif %}
-      {% endif %}
-    {% endfor %}
-    {% if page_obj.has_next %}
-    <button
+          <button
+          class="disabled cursor-not-allowed text-gray-600"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+            <polygon points="19 20 9 12 19 4 19 20"></polygon>
+            <line x1="5" y1="19" x2="5" y2="5"></line>
+            </svg>
+          </button>
+          <!--Previous Button-->
+          <button
+          class="disabled cursor-not-allowed text-gray-600"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+            <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+        {% endif %}
+        {% for i in paginator.page_range|default_if_none:page_obj.paginator.get_elided_page_range %}
+          {% if page_obj.number == i %}
+            <button
+              class="px-3 py-2 rounded{% if page_obj.number == i %} bg-purple-600 text-white font-bold{% endif %}"
+              type="button"
               {% if list_what == "Balance" %}
-              hx-get="{% url 'finances:balance_list_get' %}?page={{ page_obj.next_page_number }}" 
+                hx-get="{% url 'finances:balance_list_get' %}?page={{ i }}" 
               {% elif list_what == "Outcome" %}
-              hx-get="{% url 'finances:outcome_list_get' %}?page={{ page_obj.next_page_number }}" 
+                hx-get="{% url 'finances:outcome_list_get' %}?page={{ i }}" 
               {% endif %}
               hx-target="#loadthis"
             >
-              <svg
-                class="h-8 w-8 text-purple-600"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
+              <span>{{ i }}</span>
             </button>
-
-            <!--Last Button-->
-    <button
-      {% if list_what == "Balance" %}
-      hx-get="{% url 'finances:balance_list_get' %}?page={{ paginator.num_pages }}" 
-      {% elif list_what == "Outcome" %}
-      hx-get="{% url 'finances:outcome_list_get' %}?page={{ paginator.num_pages }}" 
-      {% endif %}
-      hx-target="#loadthis"
-  >
-    <svg
-      class="h-8 w-8 text-purple-600"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <polygon points="5 4 15 12 5 20 5 4"></polygon>
-      <line x1="19" y1="5" x2="19" y2="19"></line>
-    </svg>
-  </button>
-    {% else %}
-    <button
-    class="disabled cursor-not-allowed text-gray-600"
-  >
-    <svg
-      class="h-8 w-8 text-purple-600"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-  </button>
-  <!--Last Button-->
-  <button
-  class="disabled cursor-not-allowed text-gray-600"
-
->
-  <svg
-    class="h-8 w-8 text-purple-600"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <polygon points="5 4 15 12 5 20 5 4"></polygon>
-    <line x1="19" y1="5" x2="19" y2="19"></line>
-  </svg>
-</button>
-    {% endif %}
-</div>
-{% endif %}
+          {% else %}
+            {% if i == page_obj.paginator.ELLIPSIS %}
+              <button
+                class="px-3 py-2 rounded"
+                type="button"
+              >
+                <span>{{ i }}</span>
+              </button>
+            {% else %}
+              <button
+              class="px-3 py-2 rounded"
+              type="button"
+              {% if list_what == "Balance" %}
+              hx-get="{% url 'finances:balance_list_get' %}?page={{ i }}" 
+              {% elif list_what == "Outcome" %}
+              hx-get="{% url 'finances:outcome_list_get' %}?page={{ i }}" 
+              {% endif %}
+              hx-target="#loadthis"
+              >
+                <span>{{ i }}</span>
+              </button>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <button
+            {% if list_what == "Balance" %}
+            hx-get="{% url 'finances:balance_list_get' %}?page={{ page_obj.next_page_number }}" 
+            {% elif list_what == "Outcome" %}
+            hx-get="{% url 'finances:outcome_list_get' %}?page={{ page_obj.next_page_number }}" 
+            {% endif %}
+            hx-target="#loadthis"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+          <!--Last Button-->
+          <button
+            {% if list_what == "Balance" %}
+            hx-get="{% url 'finances:balance_list_get' %}?page={{ paginator.num_pages }}" 
+            {% elif list_what == "Outcome" %}
+            hx-get="{% url 'finances:outcome_list_get' %}?page={{ paginator.num_pages }}" 
+            {% endif %}
+            hx-target="#loadthis"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon points="5 4 15 12 5 20 5 4"></polygon>
+              <line x1="19" y1="5" x2="19" y2="19"></line>
+            </svg>
+          </button>
+        {% else %}
+          <button
+            class="disabled cursor-not-allowed text-gray-600"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+          <!--Last Button-->
+          <button
+            class="disabled cursor-not-allowed text-gray-600"
+          >
+            <svg
+              class="h-8 w-8 text-purple-600"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+            </svg>
+          </button>
+        {% endif %}
+    </div>
+  {% endif %}
 {% else %}
-<!--Message to display when no results-->
-<div class="mx-auto mb-5 flex items-center">
-  <p class="text-2xl ml-4">Nie wprowadzono jeszcze żadnych danych.</p>
-</div>
+  <!--Message to display when no results-->
+  <div class="mx-auto mb-5 flex items-center">
+    <p class="text-2xl ml-4">Nie wprowadzono jeszcze żadnych danych.</p>
+  </div>
 {% endif %}
