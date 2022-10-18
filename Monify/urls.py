@@ -9,4 +9,4 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
 ]
 
-handler404 = 'website.views.error_404'
+# handler404 = 'website.views.error_404'
