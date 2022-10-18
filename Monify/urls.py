@@ -8,5 +8,3 @@ urlpatterns = [
     path('finances/', include('finances.urls')),
     path('accounts/', include('accounts.urls')),
 ]
-
-# handler404 = 'website.views.error_404'
