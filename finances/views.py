@@ -1,7 +1,7 @@
 import calendar
-import json
-import io
 import csv
+import io
+import json
 import locale
 from decimal import Decimal
 from dateutil import relativedelta
@@ -14,12 +14,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont   
 from django.shortcuts import render
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Q
-from django.db.models.functions import TruncMonth, ExtractMonth, ExtractYear
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileResponse
+from django.db.models.functions import ExtractYear
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
@@ -92,6 +91,7 @@ class BalanceUpdateView(LoginRequiredMixin, UpdateView):
 def balance_list(request):
     return render(request, 'finances/balances.html')
 
+# Balance delete
 @login_required(login_url='accounts:login')
 def delete_balance(request, part_id=None):
     balance = Balance.objects.filter(id=part_id)
@@ -137,7 +137,7 @@ class OutcomeCreateView(LoginRequiredMixin, CreateView):
 
     def get_form_class(self):
         modelform = super().get_form_class()
-        modelform.base_fields['balance'].limit_choices_to = {'user': self.request.user}
+        modelform.base_fields['balance'].limit_choices_to = {'user': self.request.user, 'type': 1}
         return modelform
 
     def form_valid(self, form):
@@ -191,6 +191,8 @@ class OutcomeUpdateView(LoginRequiredMixin, UpdateView):
                     })
                 })
 
+# Outcome delete
+@login_required(login_url='accounts:login')
 def delete_outcome(request, part_id=None):
     outcome = Outcome.objects.filter(id=part_id)
     outcome1 = outcome.get()
@@ -211,10 +213,13 @@ def delete_outcome(request, part_id=None):
                     })
     return render(request, 'finances/balance_income_outcome_confirm_delete.html', context={'model': 'wydatek','model_name':outcome[0].get_type_display, 'model_value':outcome[0].value, 'model_date': outcome[0].date})
 
+@login_required(login_url='accounts:login')
 def outcome_list(request):
     return render(request, 'finances/incomes_outcomes.html', context={'list_what': 'Wydatki'})
 
 # Income Views
+
+# Income List View
 class IncomeListView(LoginRequiredMixin, ListView):
     login_url = 'accounts:login'
     model = Income
@@ -233,6 +238,7 @@ class IncomeListView(LoginRequiredMixin, ListView):
         context['list_what'] = 'Income'
         return context
 
+# Income Create View
 class IncomeCreateView(LoginRequiredMixin, CreateView):
     login_url = 'accounts:login'
     model = Income
@@ -242,7 +248,7 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
 
     def get_form_class(self):
         modelform = super().get_form_class()
-        modelform.base_fields['balance'].limit_choices_to = {'user': self.request.user}
+        modelform.base_fields['balance'].limit_choices_to = {'user': self.request.user, 'type': 1}
         return modelform
 
     def form_valid(self, form):
@@ -261,6 +267,7 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
                     })
                 })
 
+# Income Update View
 class IncomeUpdateView(LoginRequiredMixin, UpdateView):
     login_url = 'accounts:login'
     model = Income
@@ -295,6 +302,8 @@ class IncomeUpdateView(LoginRequiredMixin, UpdateView):
                     })
                 })
 
+# Income delete
+@login_required(login_url='accounts:login')
 def delete_income(request, part_id=None):
     income = Income.objects.filter(id=part_id)
     income1 = income.get()
@@ -319,28 +328,17 @@ def delete_income(request, part_id=None):
 def income_list(request):
     return render(request, 'finances/incomes_outcomes.html', context={'list_what': 'Przychody'})
 
+# Return the last date of input month
 def get_last_date_of_month(year, month):
-    """Return the last date of the month.
-    
-    Args:
-        year (int): Year, i.e. 2022
-        month (int): Month, i.e. 1 for January
-
-    Returns:
-        date (datetime): Last date of the current month
-    """
     last_date = datetime(year, month + 1, 1) + timedelta(days=-1)
     return last_date.strftime("%Y-%m-%d")
 
-
+# generate summary data such as total balance, last incomes, last outcomes, etc.
 def get_summary_data(request):
     today = date.today()
     start_month = date.today().replace(day=1)
     end_month = get_last_date_of_month(today.year, today.month)
     
-    # last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
-    # prev_start_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
-
     total_balance = Balance.objects\
         .filter(user=request.user, type=1).aggregate(total=Sum('value'))['total']
     total_balance = 0 if total_balance is None else total_balance
@@ -363,17 +361,6 @@ def get_summary_data(request):
         .filter(user=request.user, date=today)\
         .aggregate(total=Sum('value'))['total']
     today_total_outcome = 0 if today_total_outcome is None else today_total_outcome
-    # average_incomes_per_day = round(total_income/number_of_days_in_actual_month, 2)
-    # average_outcomes_per_day = round(total_outcome/number_of_days_in_actual_month, 2)
-
-    # Savings
-    # total_saving_balance = Balance.objects\
-    #     .filter(user=request.user, type=2).aggregate(total=Sum('value'))['total']
-    # total_saving_balance = 0 if total_saving_balance is None else total_saving_balance
-    # last_total_balance = Balance.objects\
-    #     .filter(user=request.user, type=2, date__gte=prev_start_month, date__lte=last_day_of_prev_month).aggregate(total=Sum('value'))['total']
-    # last_total_balance = 0 if last_total_balance is None else last_total_balance
-    # savings = total_saving_balance - last_total_balance
 
     # Last 5 outcomes
     last_five_outcomes_model = Outcome.objects.filter(user=request.user)[:5]
@@ -401,14 +388,12 @@ def get_summary_data(request):
         'today_total_income': str(today_total_income).replace('.', ','),
         'today_total_outcome': str(today_total_outcome).replace('.', ','),
         'actual_month': actual_month,
-        # 'savings': savings,
         'last_five_outcomes': last_five_outcomes,
         'last_five_incomes': last_five_incomes,
-        # 'average_incomes_per_day': str(average_incomes_per_day).replace('.', ','),
-        # 'average_outcomes_per_day': str(average_outcomes_per_day).replace('.', ','),
         'user_currency': user_currency,
     })
 
+# generate statistics data such as average incomes or outcomes per day, etc.
 def get_statistics_data(request):
     today = date.today()
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
@@ -416,7 +401,6 @@ def get_statistics_data(request):
     first_income_date = Income.objects.filter(user=request.user).order_by('date').first().date if Income.objects.filter(user=request.user).exists() else today
     first_outcome_date = Outcome.objects.filter(user=request.user).order_by('date').first().date if Outcome.objects.filter(user=request.user).exists() else today
     first_income_outcome_date = min(first_income_date, first_outcome_date)
-    print(f"pierwsza daata to: {first_income_outcome_date}")
 
     monday1 = (first_income_outcome_date - timedelta(days=first_income_outcome_date.weekday()))
     monday2 = (today - timedelta(days=today.weekday()))
@@ -465,7 +449,7 @@ def get_statistics_data(request):
     })
 
 
-
+# generate data to incomes vs outcomes chart
 def get_incomes_vs_outcomes_chart(request):
     context_label = Account.objects.get(user_id=request.user.id).get_currency_display()
     today = datetime.now()    
@@ -487,18 +471,9 @@ def get_incomes_vs_outcomes_chart(request):
     total_income_monthly_sum = []
     total_outcome_monthly_sum = []
 
-    month_days_30 = [4,6,9,11]
-
-    for i in range(1,12):
+    for i in range(1,13):
         start_date = date(today.year, i, 1)
-        # tutaj czy rok przystępny trzeba sprawdzić co do lutego
-        if i == 2:
-            end_date = date(today.year, i, 28)
-        elif i in month_days_30:
-            end_date = date(today.year, i, 30)
-
-        else:
-            end_date = date(today.year, i, 31)
+        end_date = date(today.year, i, calendar.monthrange(today.year, i)[1])
 
         total_income_monthly = Income.objects\
             .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
@@ -518,7 +493,7 @@ def get_incomes_vs_outcomes_chart(request):
         'context_label': context_label
     })
 
-
+# generate data to incomes/outcomes donought chart by type
 def get_income_or_outcome_by_type(request):
     get_what = request.GET.get('get_what')
     summary_type = request.GET.get('summary_type')
@@ -534,82 +509,31 @@ def get_income_or_outcome_by_type(request):
 
     today = date.today()
 
-    month_days_30 = [4,6,9,11]
-
-    # for i in range(1,12):
-    #     start_date = date(today.year, i, 1)
-    #     if i == 2:
-    #         end_date = date(today.year, i, 28)
-    #     elif i in month_days_30:
-    #         end_date = date(today.year, i, 30)
-
-    #     else:
-    #         end_date = date(today.year, i, 31)
-
     if summary_type == 'mon1':
-        # last_balance = Balance.objects.filter(user=request.user, type=1).order_by('-date').first()
-        # if not last_balance:
-        #     return JsonResponse({'error': 'No current balance has been recorded. '
-        #                         'Please add at least one current balance record. '})
-        
-        # start_date = 
-        # end_date = today
-        start_date = date.today().replace(day=1)
+        start_date = today.replace(day=1)
         end_date = get_last_date_of_month(today.year, today.month)
-        print("Miesiace")
-        print(start_date)
-        print(end_date)
-        print("Koniec")
-        
 
     elif summary_type == 'week':
-        start_date = date.today() - timedelta(days=7)
-
-        end_date = date.today()
-        print("Miesiace")
-        print(start_date)
-        print(end_date)
-        print("Koniec")
+        start_date = today - timedelta(days=7)
+        end_date = today
 
     elif summary_type == 'mon3':
-        start_date = date.today().replace(day=1) - timedelta(days=60)
-        start_date = start_date.replace(day=1)
-
+        start_date = today.replace(day=1) - relativedelta.relativedelta(months=2)
         end_date = get_last_date_of_month(today.year, today.month)
-        print("Miesiace")
-        print(start_date)
-        print(end_date)
-        print("Koniec")
 
     elif summary_type == 'mon6':
-        start_date = date.today().replace(day=1) - timedelta(days=140)
-        start_date = start_date.replace(day=1)
-
+        start_date = today.replace(day=1) - relativedelta.relativedelta(months=5)
         end_date = get_last_date_of_month(today.year, today.month)
-        print("Miesiace")
-        print(start_date)
-        print(end_date)
-        print("Koniec")
     
     elif summary_type == 'year1':
         start_date = date(today.year, 1, 1)
-
         end_date = date(today.year, 12, 31)
-        print("Miesiace")
-        print(start_date)
-        print(end_date)
-        print("Koniec")
     
     elif summary_type == 'all':
         last_object = obj.objects.filter(user=request.user).order_by('-date').first()
         first_object = obj.objects.filter(user=request.user).order_by('-date').last()
         start_date = first_object.date
-
         end_date = last_object.date
-        print("Miesiace")
-        print(start_date)
-        print(end_date)
-        print("Koniec")
 
     else:
         return JsonResponse({'error': 'Please specify summary_type parameter to be either current_period or year_overview'})
@@ -646,8 +570,7 @@ def get_income_or_outcome_by_type(request):
 
     return JsonResponse({'labels': labels, 'data': data, 'context_label': context_label})
 
-
-# W tej funkcji trzeba w zaleznosci od summary type pododawac do wykresy wydatki i przychdy
+# generate data to incomes/outcomes bar chart
 def get_income_or_outcome_bar_chart(request):
     get_what = request.GET.get('get_what')
     summary_type = request.GET.get('summary_type')
@@ -655,386 +578,115 @@ def get_income_or_outcome_bar_chart(request):
         return JsonResponse({'error': 'Please specify get_what parameter to be either "income or "outcome'})
     if get_what == 'income':
         obj = Income
-        obj_types = Income.ITypes
     else:
         obj = Outcome
-        obj_types = Outcome.OTypes
 
     today = date.today()
-
     context_label = Account.objects.get(user_id=request.user.id).get_currency_display()
-
-    month_days_30 = [4,6,9,11]
-
     labels = []
     data = []
-
     translation.activate('pl')
 
-
-    # for i in range(1,12):
-    #     start_date = date(today.year, i, 1)
-    #     if i == 2:
-    #         end_date = date(today.year, i, 28)
-    #     elif i in month_days_30:
-    #         end_date = date(today.year, i, 30)
-
-    #     else:
-    #         end_date = date(today.year, i, 31)
-
     if summary_type == 'mon1':
-        # last_balance = Balance.objects.filter(user=request.user, type=1).order_by('-date').first()
-        # if not last_balance:
-        #     return JsonResponse({'error': 'No current balance has been recorded. '
-        #                         'Please add at least one current balance record. '})
-        
-        # start_date = 
-        # end_date = today
-
-        total_income_monthly_sum = []
-        total_outcome_monthly_sum = []
-
-
-        # all_activities_today = Activity.objects.filter(date=date.today(), user=request.user)
-
-        # all_activities = Activity.objects.filter(user=request.user).order_by('date')
-
-        # type_list = [activity_type['type'] for activity_type in Activity.objects.filter(user=request.user).values('type')]
-
-        # print(type_list)
-
-        # date_list = [activity_date['date'] for activity_date in Activity.objects.filter(user=request.user).values('date').order_by('date').distinct()]
-
-        today = datetime.now()
-
-        # labels = []
-
-        month_days_30 = [4,6,9,11]
-
-        if today.month in month_days_30:
-            N = 30
-        else:
-            N = 31
-
         start_date = date(today.year, today.month, 1)
         end_date = get_last_date_of_month(today.year, today.month)
-
-        print(start_date)
-        print(end_date)
-        print(N)
-
-
-        # n_days_ago = today - timedelta(days=N)
-
-        # labels.append(start_date)
-
+        N =  calendar.monthrange(today.year, today.month)[1]
 
         for i in range(1,N+1):
-            print(i)
             labels.append(start_date)
             start_date += timedelta(days=1)
 
-        print(today.month)
-
-        #print("Daty",date_last14)
-
-        activity_label = []
-
-        # for activity in all_activities_today:
-        #     activity_label.append(activity.type)
-
-        for activity_date in labels:
-            total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=activity_date)))['s']
-            # if total is None:
-            #     data.append(0)
-            # else:
+        for current_date in labels:
+            total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=current_date)))['s']
             data.append(total)
 
-
-        # for i in range(1,12):
-        #     start_date = date(today.year, i, 1)
-        #     if i == 2:
-        #         end_date = date(today.year, i, 28)
-        #     elif i in month_days_30:
-        #         end_date = date(today.year, i, 30)
-
-        #     else:
-        #         end_date = date(today.year, i, 31)
-
-        #     total_income_monthly = Income.objects\
-        #         .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-        #         .aggregate(total=Sum('value'))['total']
-
-        #     total_outcome_monthly = Outcome.objects\
-        #         .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-        #         .aggregate(total=Sum('value'))['total']
-
-        #     total_income_monthly_sum.append(total_income_monthly)
-        #     total_outcome_monthly_sum.append(total_outcome_monthly)
-
-        #     daty.append(start_date)
-        #     daty.append(end_date)
-
-        #     print(daty)
-        #     print(total_income_monthly_sum)
-        #     print(total_outcome_monthly_sum)
-            
-        
-        #     start_date = date.today().replace(day=1)
-        #     end_date = get_last_date_of_month(today.year, today.month)
-        #     print("Miesiace")
-        #     print(start_date)
-        #     print(end_date)
-        #     print("Koniec")
-        
-
     elif summary_type == 'week':
-        # start_date = date.today() - timedelta(days=7)
-
-        # end_date = date.today()
-        # print("Miesiace")
-        # print(start_date)
-        # print(end_date)
-        # print("Koniec")
-
-        today = datetime.now()
-
-        # labels = []
-
-        month_days_30 = [4,6,9,11]
-
-        # if today.month in month_days_30:
-        #     N = 30
-        # else:
-        #     N = 31
-
-        start_date = date.today() - timedelta(days=7)
-
-        end_date = date.today()
-        N = 8
-
-        # start_date = date(today.year, today.month, 1)
-        # end_date = get_last_date_of_month(today.year, today.month)
-
-        print(start_date)
-        print(end_date)
-        print(N)
-
+        start_date = today - timedelta(days=6)
+        end_date = today
+        N = 7
         dates = []
 
-
-        # n_days_ago = today - timedelta(days=N)
-
-        # labels.append(start_date)
-
-
         for i in range(1,N+1):
-            print(i)
             dates.append(start_date)
             labels.append(f"{date_format(start_date, 'D')} ({start_date})")
             start_date += timedelta(days=1)
 
-        print(today.month)
-
-        #print("Daty",date_last14)
-
-        activity_label = []
-
-        # for activity in all_activities_today:
-        #     activity_label.append(activity.type)
-
-        for activity_date in dates:
-            total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=activity_date)))['s']
-            # if total is None:
-            #     data.append(0)
-            # else:
+        for current_date in dates:
+            total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=current_date)))['s']
             data.append(total)
 
-        
-
     elif summary_type == 'mon3':
-
-        first_month_start_date = (date.today().replace(day=1) - timedelta(days=60)).replace(day=1)
+        first_month_start_date = today.replace(day=1) - relativedelta.relativedelta(months=2)
         first_month_end_date = get_last_date_of_month(today.year, first_month_start_date.month)
 
-        second_month_start_date = (first_month_start_date + timedelta(days=40)).replace(day=1)
+        second_month_start_date = today.replace(day=1) - relativedelta.relativedelta(months=1)
         second_month_end_date = get_last_date_of_month(today.year, second_month_start_date.month)
 
-        third_month_start_date = date.today().replace(day=1)
+        third_month_start_date = today.replace(day=1)
         third_month_end_date = get_last_date_of_month(today.year, today.month)
 
         start_dates = [first_month_start_date, second_month_start_date, third_month_start_date]
         end_dates = [first_month_end_date, second_month_end_date, third_month_end_date]
 
         for start_date,end_date in zip(start_dates, end_dates):
-            print(f"{start_date} - {end_date}")
             labels.append(date_format(start_date, 'F'))
             total = obj.objects.filter(user=request.user, date__gte=start_date,
                 date__lte=end_date).aggregate(total=Sum('value'))['total']
             data.append(total)
 
-        # first_month = date_format(first_month_start_date, 'F')
-        # second_month = date_format(second_month_start_date, 'F')
-        # third_month = date_format(third_month_start_date, 'F')
-
-        # labels1 = [first_month, second_month, third_month]
-
-
-        # print(first_month)
-        # print(second_month)
-        # print(third_month)
-        # print(labels1)
-
-
-
-
-        # n_days_ago = today - timedelta(days=N)
-
-        # labels.append(start_date)
-
-
-        # for i in range(1,10+1):
-        #     print(i)
-        #     labels.append(first_month_start_date)
-        #     first_month_start_date += timedelta(days=1)
-
-        # print(today.month)
-
-        #print("Daty",date_last14)
-
-
-        # for activity in all_activities_today:
-        #     activity_label.append(activity.type)
-
-        # for activity_date in labels:
-        #     total = obj.objects.filter(user=request.user).aggregate(s=Sum('value', filter=Q(date=activity_date)))['s']
-        #     # if total is None:
-        #     #     data.append(0)
-        #     # else:
-        #     data.append(total)
-
-        # month_days_30 = [4,6,9,11]
-
-
     elif summary_type == 'mon6':
-        first_month_start_date = (date.today().replace(day=1) - timedelta(days=140)).replace(day=1)
+        first_month_start_date = today.replace(day=1) - relativedelta.relativedelta(months=5)
         first_month_end_date = get_last_date_of_month(today.year, first_month_start_date.month)
         
-        second_month_start_date = (first_month_start_date + timedelta(days=40)).replace(day=1)
+        second_month_start_date = today.replace(day=1) - relativedelta.relativedelta(months=4)
         second_month_end_date = get_last_date_of_month(today.year, second_month_start_date.month)
 
-        third_month_start_date = (second_month_start_date + timedelta(days=40)).replace(day=1)
+        third_month_start_date = today.replace(day=1) - relativedelta.relativedelta(months=3)
         third_month_end_date = get_last_date_of_month(today.year, third_month_start_date.month)
 
-        fourth_month_start_date = (third_month_start_date + timedelta(days=40)).replace(day=1)
+        fourth_month_start_date = today.replace(day=1) - relativedelta.relativedelta(months=2)
         fourth_month_end_date = get_last_date_of_month(today.year, fourth_month_start_date.month)
 
-        fifth_month_start_date = (fourth_month_start_date + timedelta(days=40)).replace(day=1)
+        fifth_month_start_date = today.replace(day=1) - relativedelta.relativedelta(months=1)
         fifth_month_end_date = get_last_date_of_month(today.year, fifth_month_start_date.month)
 
-        sixth_month_start_date = date.today().replace(day=1)
+        sixth_month_start_date = today.replace(day=1)
         sixth_month_end_date = get_last_date_of_month(today.year, today.month)
 
         start_dates = [first_month_start_date, second_month_start_date, third_month_start_date, fourth_month_start_date, fifth_month_start_date, sixth_month_start_date]
         end_dates = [first_month_end_date, second_month_end_date, third_month_end_date, fourth_month_end_date, fifth_month_end_date, sixth_month_end_date]
 
         for start_date,end_date in zip(start_dates, end_dates):
-            print(f"{start_date} - {end_date}")
             labels.append(date_format(start_date, 'F'))
             total = obj.objects.filter(user=request.user, date__gte=start_date,
                 date__lte=end_date).aggregate(total=Sum('value'))['total']
             data.append(total)
-
     
     elif summary_type == 'year1':
-
         for i in range(1,13):
             start_date = date(today.year, i, 1)
-            # tutaj trzeba sprawdzic czy rok przestepny
-            if i == 2:
-                end_date = date(today.year, i, 28)
-            elif i in month_days_30:
-                end_date = date(today.year, i, 30)
+            end_date = date(today.year, i, calendar.monthrange(today.year, i)[1])
 
-            else:
-                end_date = date(today.year, i, 31)
-
-            print(f"{start_date} - {end_date}")
             labels.append(date_format(start_date, 'F'))
             total = obj.objects.filter(user=request.user, date__gte=start_date,
                 date__lte=end_date).aggregate(total=Sum('value'))['total']
             data.append(total)
-
-            # print(start_date)
-            # print(end_date)
-
-            # total_income_monthly = Income.objects\
-            #     .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-            #     .aggregate(total=Sum('value'))['total']
-
-            # total_outcome_monthly = Outcome.objects\
-            #     .filter(user=request.user, date__gte=start_date, date__lte=end_date)\
-            #     .aggregate(total=Sum('value'))['total']
-
-            # total_income_monthly_sum.append(total_income_monthly)
-            # total_outcome_monthly_sum.append(total_outcome_monthly)
-
-            # daty.append(start_date)
-            # daty.append(end_date)
-
-            # print(daty)
-            # print(total_income_monthly_sum)
-            # print(total_outcome_monthly_sum)
-            
-        
-            # start_date = date.today().replace(day=1)
-            # end_date = get_last_date_of_month(today.year, today.month)
-            # print("Miesiace")
-            # print(start_date)
-            # print(end_date)
-            # print("Koniec")
-    
-    # elif summary_type == 'all':
-    #     last_object = obj.objects.filter(user=request.user).order_by('-date').first()
-    #     first_object = obj.objects.filter(user=request.user).order_by('-date').last()
-    #     start_date = first_object.date
-
-    #     end_date = last_object.date
-    #     print("Miesiace")
-    #     print(start_date)
-    #     print(end_date)
-    #     print("Koniec")
 
     else:
         return JsonResponse({'error': 'Please specify summary_type parameter to be either current_period or year_overview'})
-    
-    # labels = []
-    # data = []
-    # for obj_type in obj_types.choices:
-    #     labels.append(obj_type[1])
-    #     total = obj.objects.filter(user=request.user, type=obj_type[0], date__gte=start_date,
-    #         date__lte=end_date).aggregate(total=Sum('value'))['total']
-    #     total = 0 if total is None else total
-
-    #     data.append(total)
 
     return JsonResponse({'labels': labels, 'data': data, 'context_label': context_label})
-
-
 
 
 def get_progress_data(request):
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
     user_saving_method = Account.objects.get(user_id=request.user.id).saving_method
-
     today = date.today()
-
     translation.activate('pl')
     actual_month = date_format(today, 'F')
     actual_year = date_format(today, 'o')
 
-
-    start_month = date.today().replace(day=1)
+    start_month = today.replace(day=1)
     end_month = get_last_date_of_month(today.year, today.month)
 
     current_today_incomes = Income.objects\
@@ -1042,8 +694,6 @@ def get_progress_data(request):
         .aggregate(total=Sum('value'))['total']
     current_today_incomes = 0 if current_today_incomes is None else current_today_incomes
 
-    print("Pbecne wydatki")
-    print(current_today_incomes)
 
     if user_saving_method == 'METODA 6 SŁOIKÓW':
         # sloik 1 - niezbedne wydatki
@@ -1054,8 +704,6 @@ def get_progress_data(request):
 
         # sloik 1 - cel
         current_today_goal_jar1 = round(Decimal(0.55) * current_today_incomes, 2)
-
-        print(current_today_goal_jar1)
 
         # sloik 2 - duze/niespodziewane wydatki
         current_today_jar2 = Outcome.objects\
@@ -1093,7 +741,7 @@ def get_progress_data(request):
         # sloik 6 - cel
         current_today_goal_jar6 = round(Decimal(0.05) * current_today_incomes, 2)
     
-    elif user_saving_method == 'METODA 50/30/20':
+    if user_saving_method == 'METODA 50/30/20':
         current_today_box50 = Outcome.objects\
             .filter(user=request.user, date__gte=start_month, date__lte=end_month, type__gte=1, type__lte=20)\
             .aggregate(total=Sum('value'))['total']
@@ -1101,8 +749,6 @@ def get_progress_data(request):
 
         # sloik 1 - cel
         current_today_goal_box50 = round(Decimal(0.5) * current_today_incomes, 2)
-
-        print(current_today_goal_box50)
 
         # sloik 2 - duze/niespodziewane wydatki
         current_today_box30 = Outcome.objects\
@@ -1122,9 +768,6 @@ def get_progress_data(request):
         # sloik 1 - cel
         current_today_goal_box20 = round(Decimal(0.2) * current_today_incomes, 2)
 
-    else:
-        ...
-
 
     dates = Income.objects.filter(user=request.user)\
                        .annotate(year=ExtractYear('date'))\
@@ -1136,33 +779,14 @@ def get_progress_data(request):
     years = set()
     for year in dates:
         years.add(year['year'])
-        print(year)
 
     years = sorted(years, reverse=True)
-
-    month_days_30 = [4,6,9,11]
-
-
-    invoices = Outcome.objects.all()
-    months = invoices.dates("date", kind="month")
-    for month in months:
-        month_invs = invoices.filter(date__month=month.month, user=request.user)
-        month_total = month_invs.aggregate(total=Sum("value")).get("total")
-        print(f"Month: {month}, Total: {month_total}")
 
     for year in years:
         for i in range(1,13):
             start_month = date(int(year), i, 1)
-            # tutaj trzeba sprawdzic czy rok przestepny
-            if i == 2:
-                end_month = date(int(year), i, 28)
-            elif i in month_days_30:
-                end_month = date(int(year), i, 30)
+            end_month = date(int(year), i, calendar.monthrange(int(year), i)[1])
 
-            else:
-                end_month = date(int(year), i, 31)
-
-            print(f"{start_month} - {end_month}")
             labels.append(date_format(start_month, 'F'))
 
             current_month_incomes = Income.objects\
@@ -1229,7 +853,7 @@ def get_progress_data(request):
                     'goal_jar_6': current_goal_jar6,
                     'jar6': current_jar6
                     })
-            elif user_saving_method == 'METODA 50/30/20':
+            if user_saving_method == 'METODA 50/30/20':
                 # sloik 1 - niezbedne wydatki
                 current_box50 = Outcome.objects\
                     .filter(user=request.user, date__gte=start_month, date__lte=end_month, type__gte=1, type__lte=20)\
@@ -1268,21 +892,18 @@ def get_progress_data(request):
                     'goal_box20': current_goal_box20
                     })
             
-            else:
-                ...
-
 
     if user_saving_method == 'METODA 6 SŁOIKÓW':
         return JsonResponse({
-            'current_today_jar1': current_today_jar1,
-            'current_today_goal_jar1': current_today_goal_jar1,
-            'current_today_jar2': current_today_jar2,
-            'current_today_jar3': current_today_jar3,
-            'current_today_jar4': current_today_jar4,
-            'current_today_jar5': current_today_jar5,
-            'current_today_goal_jar2345': current_today_goal_jar2345,
-            'current_today_jar6': current_today_jar6,
-            'current_today_goal_jar6': current_today_goal_jar6,
+            'current_today_jar1': str(current_today_jar1).replace('.', ','),
+            'current_today_goal_jar1': str(current_today_goal_jar1).replace('.', ','),
+            'current_today_jar2': str(current_today_jar2).replace('.', ','),
+            'current_today_jar3': str(current_today_jar3).replace('.', ','),
+            'current_today_jar4': str(current_today_jar4).replace('.', ','),
+            'current_today_jar5': str(current_today_jar5).replace('.', ','),
+            'current_today_goal_jar2345': str(current_today_goal_jar2345).replace('.', ','),
+            'current_today_jar6': str(current_today_jar6).replace('.', ','),
+            'current_today_goal_jar6': str(current_today_goal_jar6).replace('.', ','),
             'actual_month': actual_month,
             'actual_year': actual_year,
             'user_currency': user_currency,
@@ -1292,12 +913,12 @@ def get_progress_data(request):
 
     elif user_saving_method == 'METODA 50/30/20':
         return JsonResponse({
-            'current_today_box50': current_today_box50,
-            'current_today_goal_box50': current_today_goal_box50,
-            'current_today_box30': current_today_box30,
-            'current_today_goal_box30': current_today_goal_box30,
-            'current_today_box20': current_today_box20,
-            'current_today_goal_box20': current_today_goal_box20,
+            'current_today_box50': str(current_today_box50).replace('.', ','),
+            'current_today_goal_box50': str(current_today_goal_box50).replace('.', ','),
+            'current_today_box30': str(current_today_box30).replace('.', ','),
+            'current_today_goal_box30': str(current_today_goal_box30).replace('.', ','),
+            'current_today_box20': str(current_today_box20).replace('.', ','),
+            'current_today_goal_box20': str(current_today_goal_box20).replace('.', ','),
             'actual_month': actual_month,
             'actual_year': actual_year,
             'user_currency': user_currency,
@@ -1306,7 +927,7 @@ def get_progress_data(request):
         })
 
     else:
-        ...
+        return JsonResponse({'error': 'Please specify user_saving_method parameter to get progress data'})
 
 
 # Generate PDF raport
@@ -1327,16 +948,12 @@ def generate_PDF(request):
         obj = Balance
         raport_of_what = 'kont'
 
-    # print(start_date)
-    # print(end_date)
-
     if get_what != 'balances':
         if start_date == '' or end_date == '':
-            start_date = today.replace(day=1)
-            end_date = get_last_date_of_month(today.year, today.month)
+            start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
+            end_date = today
             start_date_label = start_date.strftime("%d-%m-%Y")
-            end_date_label = datetime.strptime(end_date, '%Y-%m-%d')
-            end_date_label = end_date_label.strftime("%d-%m-%Y")
+            end_date_label = end_date.strftime("%d-%m-%Y")
 
         else:
             start_date_label = datetime.strptime(start_date, '%Y-%m-%d')
@@ -1344,10 +961,7 @@ def generate_PDF(request):
             start_date_label = start_date_label.strftime("%d-%m-%Y")
             end_date_label = end_date_label.strftime("%d-%m-%Y")
 
-
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
-
-    
 
     # Create Bytestream buffer
     buf = io.BytesIO()
@@ -1357,6 +971,7 @@ def generate_PDF(request):
     pdfmetrics.registerFont(TTFont('Verdana', 'Verdana.ttf'))
     textob = c.beginText()
     textob.setTextOrigin(inch, inch)
+    # Set font and font size
     textob.setFont('Verdana', 14)
 
     # Add some lines of text
@@ -1366,28 +981,21 @@ def generate_PDF(request):
         objects = obj.objects.filter(user=request.user)
 
         for current_object in objects:
-            lines.append((f'{str(current_object.name)}    {current_object.date}    {str(current_object.value)} {user_currency}    {current_object.get_type_display()}'))
+            current_object_value = str(current_object.value).replace('.', ',')
+            lines.append((f'{str(current_object.name)}    {current_object.date.strftime("%d-%m-%Y")}    {current_object_value} {user_currency}    {current_object.get_type_display()}'))
             lines.append(" ")
 
         textob.textLine(f'Wykaz {raport_of_what}')
         
-    
     else:
         objects = obj.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
 
         for current_object in objects:
-            # lines.append(str(current_object.date))
-            # if current_object.comment != '':
-            #     lines.append(str(f'{current_object.date}        Brak komentarza        {current_object.get_type_display()}                {current_object.value} {user_currency}'))
-
-            # else:
-            lines.append((f'{str(current_object.date)}    {current_object.balance.name}    {current_object.get_type_display()}    {str(current_object.value)} {user_currency}    {current_object.comment}'))
-            # lines.append(str(current_object.get_type_display()))
+            current_object_value = str(current_object.value).replace('.', ',')
+            lines.append((f'{str(current_object.date.strftime("%d-%m-%Y"))}    {current_object.balance.name}    {current_object.get_type_display()}    {current_object_value} {user_currency}'))
             lines.append(" ")
         
         textob.textLine(f'Wykaz {raport_of_what} {start_date_label} - {end_date_label}')
-
-    # print(lines)
 
     textob.textLine(" ")
     textob.textLine(" ")
@@ -1401,7 +1009,6 @@ def generate_PDF(request):
     c.save()
     buf.seek(0)
 
-    # Return something
     return FileResponse(buf, as_attachment=True, filename=f'Raport_PDF{today}.pdf')
 
 
@@ -1415,24 +1022,17 @@ def generate_CSV(request):
         return JsonResponse({'error': 'Please specify get_what parameter to be either "income or "outcome'})
     if get_what == 'incomes':
         obj = Income
-        raport_of_what = 'przychodów'
     elif get_what == 'outcomes':
         obj = Outcome
-        raport_of_what = 'wydatków'
     else:
         obj = Balance
-        raport_of_what = 'kont'
-
-    print(start_date)
-    print(end_date)
 
     locale.setlocale(locale.LC_ALL, '')
     DELIMITER = ';' if locale.localeconv()['decimal_point'] == ',' else ','
 
-
     if start_date == '' or end_date == '':
-        start_date = today.replace(day=1)
-        end_date = get_last_date_of_month(today.year, today.month)
+            start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
+            end_date = today
 
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
     response = HttpResponse(content_type='text/csv')
@@ -1441,27 +1041,24 @@ def generate_CSV(request):
     # Create a CSV writer
     response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response, delimiter=DELIMITER)
-    # writer = csv.writer(response)
 
     if get_what == 'balances':
         objects = obj.objects.filter(user=request.user)
 
          # Add column headings to the csv file
-        writer.writerow(['Nazwa', 'Data utworzenia', 'Kwota', 'Typ konta', 'Komentarz'])
-
+        writer.writerow(['Nazwa', 'Data utworzenia', 'Kwota', 'Waluta', 'Typ konta', 'Komentarz'])
 
         for current_object in objects:
-            writer.writerow([current_object.name, current_object.date, current_object.value, current_object.get_type_display(), current_object.comment])
+            writer.writerow([current_object.name, current_object.date, current_object.value, user_currency, current_object.get_type_display(), current_object.comment])
         
     else:
         objects = obj.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
 
         # Add column headings to the csv file
-        writer.writerow(['Data', 'Konto', 'Kategoria', 'Kwota', 'Komentarz'])
-
+        writer.writerow(['Data', 'Konto', 'Kategoria', 'Kwota', 'Waluta', 'Komentarz'])
 
         for current_object in objects:
-            writer.writerow([current_object.date, current_object.balance.name, current_object.get_type_display(), current_object.value, current_object.comment])
+            writer.writerow([current_object.date, current_object.balance.name, current_object.get_type_display(), current_object.value, user_currency, current_object.comment])
         
     return response
 

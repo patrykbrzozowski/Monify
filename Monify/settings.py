@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-m$9*3v^ets)yitd=uu=np9u@t8q6u0q+r$=6t&sstuosl9y#3!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -83,22 +83,22 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': 'monify',
-    #     'USER': 'postgres',
-    #     'PASSWORD': 'dreams!@#$',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'monify',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'USER': 'root',
+        'USER': 'postgres',
         'PASSWORD': 'dreams!@#$',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'monify',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '3306',
+    #     'USER': 'root',
+    #     'PASSWORD': 'dreams!@#$',
+    # }
 }
 
 

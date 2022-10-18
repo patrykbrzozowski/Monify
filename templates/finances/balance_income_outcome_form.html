@@ -11,8 +11,8 @@
         </svg>
       </div>
     </div>
-    <div class="">
-      <div class="mb-1 rounded mx-10 grid grid-cols-1" >
+    <div>
+      <div class="mb-1 rounded mx-10 grid grid-cols-1">
         <label for="{{ form.name.id_for_label }}" class="my-3 text-gray-600">Nazwa konta:</label>
         {% render_field form.name class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
         <div class="invalid-feedback">{{ form.name.errors|first }}</div>
@@ -34,7 +34,7 @@
       </div>
       <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
         <label for="{{ form.comment.id_for_label }}" class="my-3 text-gray-600">Komentarz</label >
-        {% render_field form.comment class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" rows="4" %}
+        {% render_field form.comment class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" rows="4" maxlength="80" %}
         <div class="invalid-feedback">{{ form.comment.errors|first }}</div>
       </div>
     </div>
@@ -43,15 +43,15 @@
     <div class="flex justify-end pt-2 my-3">
         <button type="submit" id="submitBtn" class="mx-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white ">
           {% if header == 'Edytuj konto' %}
-          Zapisz
+            Zapisz
           {% elif header == "Dodaj konto" %}
-          Dodaj
+            Dodaj
           {% endif %}
         </button>
         {% if header == 'Edytuj konto' %}
           <button hx-get="{% url 'finances:balance_delete' object.pk %}" hx-target="#dialog1" @click="showModal = false; showConfirmationModal = true" class="modal-close px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń</button>
         {% endif %}
-          <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showModal = false">
+        <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showModal = false">
           Zamknij
         </button>
       </div>
@@ -65,10 +65,10 @@
           </svg>
         </div>
       </div>
-      <div class="">
+      <div>
         <div class="mb-1 rounded mx-10 grid grid-cols-1">
           <label for="{{ form.value.id_for_label }}" class="my-3 text-gray-600">Wartość</label>
-          {% render_field form.value class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" %}
+          {% render_field form.value class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" min="0" %}
           <div class="bg-white invalid-feedback"><span class="text-red-600">{{ form.value.errors|first }}</span></div>
         </div>
         <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
@@ -87,8 +87,8 @@
           <div class="text-red-500 py-1" id="invalid-feedback-balance"></div>
         </div>
         <div class="mb-1 pt-3 rounded mx-10 grid grid-cols-1">
-          <label for="{{ form.comment.id_for_label }}" class="my-3 text-gray-600">Komentarz</label >
-          {% render_field form.comment class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" rows="4" %}
+          <label for="{{ form.comment.id_for_label }}" class="my-3 text-gray-600">Komentarz</label>
+          {% render_field form.comment class="rounded-lg text-gray-600 focus:outline-none border border-gray-400 shadow-lg focus:border-gray-600 transition duration-500 p-2" rows="4" maxlength="80" %}
           <div class="invalid-feedback">{{ form.comment.errors|first }}</div>
         </div>
       </div>
@@ -97,9 +97,9 @@
       <div class="flex justify-end pt-2 my-3">
           <button type="submit" id="submitBtn" class="mx-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white ">
             {% if header == 'Edytuj wydatek' or header == "Edytuj przychód" %}
-            Zapisz
+              Zapisz
             {% elif header == "Dodaj wydatek" or header == "Dodaj przychód" %}
-            Dodaj
+              Dodaj
             {% endif %}
           </button>
           {% if header == 'Edytuj wydatek' %}
@@ -107,16 +107,13 @@
           {% elif header == 'Edytuj przychód' %}
             <button hx-get="{% url 'finances:income_delete' object.pk %}" hx-target="#dialog1" @click="showModal = false; showConfirmationModal = true" class="modal-close px-4 bg-red-500 p-2 rounded-lg text-white hover:bg-red-400">Usuń</button>
           {% endif %}
-            <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showModal = false">
+          <button type="button" class="px-4 bg-transparent p-2 rounded-lg text-purple-500 hover:bg-gray-100 hover:text-purple-400 mr-2" data-bs-dismiss="modal" @click="showModal = false">
             Zamknij
           </button>
         </div>
-        
-
       {% endif %}
     </form>
     {% endwith %}
 
 {% block js %}
 {% endblock %}
-

@@ -138,3 +138,7 @@ def get_profile_data(request):
 @login_required(login_url='accounts:login')
 def profile(request):
     return render(request, 'accounts/profile.html')
+
+@login_required(login_url='accounts:login')
+def info(request):
+    return render(request, 'accounts/info.html')

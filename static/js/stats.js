@@ -84,7 +84,7 @@ $(document).ready(function () {
           tooltip: {
             callbacks: {
               label: (context) => {
-                return ` ${context.label} - ${context.parsed} ${context_label}`;
+                return ` ${context.label} - ${context.formattedValue} ${context_label}`;
               }
             }
           }
@@ -150,7 +150,7 @@ $(document).ready(function () {
           tooltip: {
             callbacks: {
               label: (context) => {
-                return ` ${context.label} - ${context.parsed} ${context_label}`;
+                return ` ${context.label} - ${context.formattedValue} ${context_label}`;
               }
             }
           }
@@ -215,7 +215,7 @@ $(document).ready(function () {
           tooltip: {
             callbacks: {
               label: (context) => {
-                return ` ${context.label} - ${context.raw} ${context_label}`;
+                return ` ${context.label} - ${context.formattedValue} ${context_label}`;
               }
             }
           }
@@ -280,7 +280,7 @@ $(document).ready(function () {
           tooltip: {
             callbacks: {
               label: (context) => {
-                return ` ${context.label} - ${context.raw} ${context_label}`;
+                return ` ${context.label} - ${context.formattedValue} ${context_label}`;
               }
             }
           }

@@ -1,84 +1,91 @@
+{% extends 'register_base.html' %}
 {% load static %}
 {% load widget_tweaks %}
 {% with WIDGET_ERROR_CLASS='is-invalid' %}
 
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <!-- favicon-16x16.png - The classic favicon, displayed in the tabs. -->
-    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}" sizes="16x16">
-    <!-- favicon-32x32.png - For Safari on Mac OS. -->
-    <link rel="icon" type="image/png" href="{% static 'img/icon32.png' %}" sizes="32x32">
-    <title>Monify App - kontroluj mądrze swoje wydatki</title>
-</head>
-<body class="bg-purple-600 min-h-screen pt-5 pb-5 px-2 md:px-0">
-    <div>
-        <a href="{% url 'website:index' %}" class="text-xl ml-5 text-white"><i class="fa-solid fa-circle-chevron-left"></i> <span class="hidden md:inline-block">Powrót</span></a>
-    </div>
-    <div class="mx-auto">
-        <img src="{% static 'img/whitelogo.png' %}" class="mx-auto w-28 h-28" alt="" />
-    </div>
-    <main class="bg-white max-w-lg mx-auto p-8 md:p-12 my-8 rounded-lg shadow-2xl">
-        <section class="">
-            <div>
-                <h3 class="font-bold text-3xl text-gray-700">Zarejestruj się</h1>
-                <!-- <p class="text-gray-600 pt-2">Zarejestruj się</hp> -->
+        {% block title %}
+        <div>
+            <h3 class="font-bold text-3xl text-gray-700">Zarejestruj się</h3>
+        </div>
+        {% endblock %}
+        {% block content %}
+          <form class="flex flex-col" action="" method="POST">
+            {% csrf_token %}
+            <div class="mb-6 pt-3 rounded bg-gray-200">
+              {% render_field form.first_name class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Imię" type="text" maxlength="70" %}
             </div>
-            {% if messages %}
-                <div class="mb-2">
-                {% for message in messages %}
-                    <div class="flex{% if message.tags == 'warning' %} bg-red-200{% elif message.tags == 'success' %}bg-green-200 {% endif %} rounded-lg">
-                        <p class="mx-auto px-2 py-2 text-xl{% if message.tags == 'warning' %} text-red-600{% elif message.tags == 'success' %} text-green-600 {% endif %}">{{ message }}</p>
-                    </div>
-                {% endfor %}
-                </div>
-            {% endif %}
-            <div class="mt-10">
-                <form class="flex flex-col" action="" method="POST">
-                    {% csrf_token %}
-                    <div class="mb-6 pt-3 rounded bg-gray-200">
-                        <!-- <input class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Imię" type="text" name="first_name" id="first_name"> -->
-                        {% render_field form.first_name class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Imię" type="text" maxlength="60" %}
-                    </div>
-                    <div class="mb-6 pt-3 rounded bg-gray-200">
-                        <!-- <input class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Nazwisko" type="text" name="last_name" id="last_name"> -->
-                        {% render_field form.last_name class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Nazwisko" type="text" maxlength="60" %}
-                    </div>
-                    <div class="mb-6 pt-3 rounded bg-gray-200">
-                        <!-- <input class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Adres email" type="email" name="email" id="email"> -->
-                        {% render_field form.email class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Adres email" type="email" maxlength="50" %}
-                        <div class="bg-white invalid-feedback"><span class="text-red-600">{{ form.email.errors|first }}</span></div>
-                    </div>
-                    <div class="mb-6 pt-3 rounded bg-gray-200">
-                        <!-- <input class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Hasło" type="password" name="password1" id="password1"> -->
-                        {% render_field form.password1 class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Hasło" type="password" %}
-                    </div>
-                    <div class="mb-6 pt-3 rounded bg-gray-200">
-                        <!-- <input class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Potwierdź hasło" type="password" name="password2" id="password2"> -->
-                        {% render_field form.password2 class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Potwierdź hasło" type="password" %}
-                    </div>
-                    <div class="flex justify-end">
-                        <a class="text-sm text-gray-700 hover:text-gray-700 hover:underline mb-6" href="{% url 'accounts:login' %}">Masz konto? Zaloguj się</a>
-                    </div>
-                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-purple-50 font-bold py-2 rounded-full shadow-lg hover:shadow-xl transition duration-200">
-                        Zarejestruj się
-                    </button>
-                </form>
+            <div class="mb-6 pt-3 rounded bg-gray-200">
+              {% render_field form.last_name class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Nazwisko" type="text" maxlength="70" %}
             </div>
-        </section>
-    </main>
-</body>
-</html>
+            <div class="mb-6 pt-3 rounded bg-gray-200">
+              {% render_field form.email class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" placeholder="Adres email" type="email" maxlength="255" %}
+              <div class="bg-white invalid-feedback">
+                <span class="text-red-600">{{ form.email.errors|first }}</span>
+              </div>
+            </div>
+            <div class="mb-6 pt-3 rounded bg-gray-200">
+              {% render_field form.password1 class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" id="password1" placeholder="Hasło" type="password" %}
+              <div class="bg-white invalid-feedback">
+                <span class="text-red-600">{{ form.password1.errors|first }}</span>
+              </div>
+            </div>
+            <ul class="mb-5 list-disc ml-7">
+                <li>Twoje hasło musi zawierać co najmniej 8 znaków</li>
+                <li>Twoje hasło musi zawierać co najmniej 1 dużą literę</li>
+                <li>Twoje hasło musi zawierać co najmniej 1 cyfrę</li>
+                <li>Twoje hasło nie może składać się tylko z cyfr</li>
+              </ul>
+            <div class="mb-6 pt-3 rounded bg-gray-200">
+              {% render_field form.password2 class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-gray-600 transition duration-500 px-3 pb-3" id="password2" placeholder="Potwierdź hasło" type="password" %}
+              <div class="bg-white invalid-feedback">
+                <span class="text-red-600">{{ form.email.password2|first }}</span>
+              </div>
+            </div>
+            <div class="mb-6">
+                <input
+                  type="checkbox"
+                  class="w-4 h-4 text-gray-600 bg-gray-100 accent-gray-400 rounded border-gray-300 focus:ring-gray-500"
+                  id="show-password"
+                  name="show-password"
+                />
+                <label
+                  class="ml-2 text-md font-medium text-gray-700"
+                  for="show-password"
+                  >Pokaż hasła</label
+                >
+            </div>
+            <div class="flex justify-end">
+              <a
+                class="text-sm text-gray-700 hover:text-gray-700 hover:underline mb-6"
+                href="{% url 'accounts:login' %}"
+                >Masz konto? Zaloguj się</a
+              >
+            </div>
+            <button
+              type="submit"
+              class="bg-purple-600 hover:bg-purple-700 text-purple-50 font-bold py-2 rounded-full shadow-lg hover:shadow-xl transition duration-200"
+            >
+              Zarejestruj się
+            </button>
+          </form>
+          {% endblock %}
+
+    {% block js %}
+    <script>
+        var toggle = document.querySelector( "#show-password" );
+        var password1 = document.querySelector( "#password1" );
+        var password2 = document.querySelector( "#password2" );
+        toggle.addEventListener( "click", handleToggleClick, false );
+        function handleToggleClick( event ) {
+            if ( this.checked ) {
+                password1.type = "text";
+                password2.type = "text";
+            } else {
+                password1.type = "password";
+                password2.type = "password";
+            }
+        }
+    </script>
+    {% endblock %}
 
 {% endwith %}
