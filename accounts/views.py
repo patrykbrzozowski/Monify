@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.utils.safestring import mark_safe
 
 from finances.models import Balance, Income, Outcome
 from .forms import CustomUserCreationForm, CustomUserChangeForm, ChangeUserCurrency, ChangeUserSavingMethod
@@ -32,7 +31,6 @@ def register(request):
 # login function
 def login_view(request):
     if request.user.is_authenticated:
-        messages.info(request, mark_safe(f'Jesteś już zalogowany/a jako <b>{request.user.username}</b>.'))
         return redirect('finances:dashboard')
     username = ""
     if request.method == 'POST':
