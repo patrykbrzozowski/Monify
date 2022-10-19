@@ -31,7 +31,6 @@ urlpatterns = [
     path('get_income_or_outcome_bar_chart/', views.get_income_or_outcome_bar_chart, name='get_income_or_outcome_bar_chart'),
 
     path('raport_form', views.raport_form, name='raport_form'),
-    path('generate_PDF', views.generate_PDF, name='generate_PDF'),
     path('generate_CSV', views.generate_CSV, name='generate_CSV'),
 
     path('dashboard/', views.dashboard, name='dashboard'),
