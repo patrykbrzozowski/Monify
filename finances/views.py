@@ -968,11 +968,11 @@ def generate_PDF(request):
     # Create canvas
     c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
     # Create text object
-    pdfmetrics.registerFont(TTFont('Verdana', 'Verdana.ttf'))
+    pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
     textob = c.beginText()
     textob.setTextOrigin(inch, inch)
     # Set font and font size
-    textob.setFont('Verdana', 14)
+    textob.setFont('Arial', 14)
 
     # Add some lines of text
     lines = []
