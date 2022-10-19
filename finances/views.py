@@ -948,7 +948,7 @@ def generate_PDF(request):
         obj = Balance
         raport_of_what = 'kont'
 
-    if get_what != 'balances':
+    if get_what != 'balances' and obj.objects.filter(user=request.user).exists():
         if start_date == '' or end_date == '':
             start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
             end_date = today
@@ -977,25 +977,29 @@ def generate_PDF(request):
     # Add some lines of text
     lines = []
 
-    if get_what == 'balances':
-        objects = obj.objects.filter(user=request.user)
+    if obj.objects.filter(user=request.user).exists():
+        if get_what == 'balances':
+            objects = obj.objects.filter(user=request.user)
 
-        for current_object in objects:
-            current_object_value = str(current_object.value).replace('.', ',')
-            lines.append((f'{str(current_object.name)}    {current_object.date.strftime("%d-%m-%Y")}    {current_object_value} {user_currency}    {current_object.get_type_display()}'))
-            lines.append(" ")
+            for current_object in objects:
+                current_object_value = str(current_object.value).replace('.', ',')
+                lines.append((f'{str(current_object.name)}    {current_object.date.strftime("%d-%m-%Y")}    {current_object_value} {user_currency}    {current_object.get_type_display()}'))
+                lines.append(" ")
 
-        textob.textLine(f'Wykaz {raport_of_what}')
+            textob.textLine(f'Wykaz {raport_of_what}')
         
+        else:
+                objects = obj.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
+
+                for current_object in objects:
+                    current_object_value = str(current_object.value).replace('.', ',')
+                    lines.append((f'{str(current_object.date.strftime("%d-%m-%Y"))}    {current_object.balance.name}    {current_object.get_type_display()}    {current_object_value} {user_currency}'))
+                    lines.append(" ")
+                
+                textob.textLine(f'Wykaz {raport_of_what} {start_date_label} - {end_date_label}')
     else:
-        objects = obj.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
-
-        for current_object in objects:
-            current_object_value = str(current_object.value).replace('.', ',')
-            lines.append((f'{str(current_object.date.strftime("%d-%m-%Y"))}    {current_object.balance.name}    {current_object.get_type_display()}    {current_object_value} {user_currency}'))
-            lines.append(" ")
+        textob.textLine(f'Nie dodano jeszcze żadnych {raport_of_what}')
         
-        textob.textLine(f'Wykaz {raport_of_what} {start_date_label} - {end_date_label}')
 
     textob.textLine(" ")
     textob.textLine(" ")
@@ -1009,7 +1013,7 @@ def generate_PDF(request):
     c.save()
 
     response = HttpResponse(buf.getvalue(), content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename=Raport_PDF{today}.pdf'
+    response['Content-Disposition'] = f'inline; filename=Raport_PDF{today}.pdf'
 
     return response
 
@@ -1032,36 +1036,37 @@ def generate_CSV(request):
     locale.setlocale(locale.LC_ALL, '')
     DELIMITER = ';' if locale.localeconv()['decimal_point'] == ',' else ','
 
-    if start_date == '' or end_date == '':
-            start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
-            end_date = today
-
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename=Raport_CSV{today}.csv'
 
+    if obj.objects.filter(user=request.user).exists() and (start_date == '' or end_date == ''):
+        start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
+        end_date = today
+        response.write(u'\ufeff'.encode('utf8'))
+
     # Create a CSV writer
-    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response, delimiter=DELIMITER)
 
-    if get_what == 'balances':
-        objects = obj.objects.filter(user=request.user)
+    if obj.objects.filter(user=request.user).exists():
+        if get_what == 'balances':
+            objects = obj.objects.filter(user=request.user)
 
-         # Add column headings to the csv file
-        writer.writerow(['Nazwa', 'Data utworzenia', 'Kwota', 'Waluta', 'Typ konta', 'Komentarz'])
+            # Add column headings to the csv file
+            writer.writerow(['Nazwa', 'Data utworzenia', 'Kwota', 'Waluta', 'Typ konta', 'Komentarz'])
 
-        for current_object in objects:
-            writer.writerow([current_object.name, current_object.date, current_object.value, user_currency, current_object.get_type_display(), current_object.comment])
-        
-    else:
-        objects = obj.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
+            for current_object in objects:
+                writer.writerow([current_object.name, current_object.date, current_object.value, user_currency, current_object.get_type_display(), current_object.comment])
+            
+        else:
+            objects = obj.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
 
-        # Add column headings to the csv file
-        writer.writerow(['Data', 'Konto', 'Kategoria', 'Kwota', 'Waluta', 'Komentarz'])
+            # Add column headings to the csv file
+            writer.writerow(['Data', 'Konto', 'Kategoria', 'Kwota', 'Waluta', 'Komentarz'])
 
-        for current_object in objects:
-            writer.writerow([current_object.date, current_object.balance.name, current_object.get_type_display(), current_object.value, user_currency, current_object.comment])
-        
+            for current_object in objects:
+                writer.writerow([current_object.date, current_object.balance.name, current_object.get_type_display(), current_object.value, user_currency, current_object.comment])
+            
     return response
 
 
