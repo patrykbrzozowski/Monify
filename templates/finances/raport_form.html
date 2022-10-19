@@ -35,63 +35,42 @@
 {% if raport_object == 'incomes' %}
 <script>
    $('#download_PDF').on('click', function() {
-    // console.log("Dowload PDF")
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
-        // console.log(start_date)
-        // console.log(end_date)
-        // $.get(`/finances/generate_PDF?get_what=incomes`);
-      window.location = `/finances/generate_PDF?get_what=incomes&start_date=${start_date}&end_date=${end_date}`;
+      window.open(`/finances/generate_PDF?get_what=incomes&start_date=${start_date}&end_date=${end_date}`, '_blank');
     });
 
     $('#download_CSV').on('click', function() {
-    // console.log("Dowload CSV")
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
-        // console.log(start_date)
-        // console.log(end_date)
-        // $.get(`/finances/generate_PDF?get_what=incomes`);
       window.location = `/finances/generate_CSV?get_what=incomes&start_date=${start_date}&end_date=${end_date}`;
     });
 </script>
 {% elif raport_object == 'outcomes' %}
 <script>
   $('#download_PDF').on('click', function() {
-  //  console.log("Dowload PDF")
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
-      //  console.log(start_date)
-      //  console.log(end_date)
-       // $.get(`/finances/generate_PDF?get_what=incomes`);
-      window.location = `/finances/generate_PDF?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`;
+      window.open(`/finances/generate_PDF?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`, '_blank');
    });
 
    $('#download_CSV').on('click', function() {
-    // console.log("Dowload CSV")
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
-        // console.log(start_date)
-        // console.log(end_date)
-        // $.get(`/finances/generate_PDF?get_what=incomes`);
       window.location = `/finances/generate_CSV?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`;
     });
 </script>
 {% else %}
 <script>
   $('#download_PDF').on('click', function() {
-  //  console.log("Dowload PDF")
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
-      //  console.log(start_date)
-      //  console.log(end_date)
-       // $.get(`/finances/generate_PDF?get_what=incomes`);
-      window.location = `/finances/generate_PDF?get_what=balances`;
+      window.open(`/finances/generate_PDF?get_what=balances`, '_blank');
    });
 
    $('#download_CSV').on('click', function() {
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
-        // $.get(`/finances/generate_PDF?get_what=incomes`);
       window.location = `/finances/generate_CSV?get_what=balances`;
     });
 </script>
