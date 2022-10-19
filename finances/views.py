@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Q
 from django.db.models.functions import ExtractYear
-from django.http import HttpResponse, JsonResponse, FileResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
@@ -1007,9 +1007,11 @@ def generate_PDF(request):
     c.drawText(textob)
     c.showPage()
     c.save()
-    buf.seek(0)
 
-    return FileResponse(buf, as_attachment=True, filename=f'Raport_PDF{today}.pdf')
+    response = HttpResponse(buf.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=Raport_PDF{today}.pdf'
+
+    return response
 
 
 # Generate CSV raport
