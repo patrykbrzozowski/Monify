@@ -1,6 +1,5 @@
 import calendar
 import csv
-import io
 import json
 import locale
 from decimal import Decimal
@@ -8,11 +7,6 @@ from dateutil import relativedelta
 from datetime import date, timedelta, datetime
 from django.utils.formats import date_format
 from django.utils import translation
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont   
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -930,94 +924,6 @@ def get_progress_data(request):
         return JsonResponse({'error': 'Please specify user_saving_method parameter to get progress data'})
 
 
-# Generate PDF raport
-def generate_PDF(request):
-    get_what = request.GET.get('get_what')
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    today = date.today()
-    if get_what is None or get_what not in ['incomes', 'outcomes', 'balances']:
-        return JsonResponse({'error': 'Please specify get_what parameter to be either "income or "outcome'})
-    if get_what == 'incomes':
-        obj = Income
-        raport_of_what = 'przychodów'
-    elif get_what == 'outcomes':
-        obj = Outcome
-        raport_of_what = 'wydatków'
-    else:
-        obj = Balance
-        raport_of_what = 'kont'
-
-    if get_what != 'balances' and obj.objects.filter(user=request.user).exists():
-        if start_date == '' or end_date == '':
-            start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
-            end_date = today
-            start_date_label = start_date.strftime("%d-%m-%Y")
-            end_date_label = end_date.strftime("%d-%m-%Y")
-
-        else:
-            start_date_label = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date_label = datetime.strptime(end_date, '%Y-%m-%d')
-            start_date_label = start_date_label.strftime("%d-%m-%Y")
-            end_date_label = end_date_label.strftime("%d-%m-%Y")
-
-    user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
-
-    # Create Bytestream buffer
-    buf = io.BytesIO()
-    # Create canvas
-    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
-    # Create text object
-    pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
-    textob = c.beginText()
-    textob.setTextOrigin(inch, inch)
-    # Set font and font size
-    textob.setFont('Arial', 14)
-
-    # Add some lines of text
-    lines = []
-
-    if obj.objects.filter(user=request.user).exists():
-        if get_what == 'balances':
-            objects = obj.objects.filter(user=request.user)
-
-            for current_object in objects:
-                current_object_value = str(current_object.value).replace('.', ',')
-                lines.append((f'{str(current_object.name)}    {current_object.date.strftime("%d-%m-%Y")}    {current_object_value} {user_currency}    {current_object.get_type_display()}'))
-                lines.append(" ")
-
-            textob.textLine(f'Wykaz {raport_of_what}')
-        
-        else:
-                objects = obj.objects.filter(user=request.user, date__gte=start_date, date__lte=end_date)
-
-                for current_object in objects:
-                    current_object_value = str(current_object.value).replace('.', ',')
-                    lines.append((f'{str(current_object.date.strftime("%d-%m-%Y"))}    {current_object.balance.name}    {current_object.get_type_display()}    {current_object_value} {user_currency}'))
-                    lines.append(" ")
-                
-                textob.textLine(f'Wykaz {raport_of_what} {start_date_label} - {end_date_label}')
-    else:
-        textob.textLine(f'Nie dodano jeszcze żadnych {raport_of_what}')
-        
-
-    textob.textLine(" ")
-    textob.textLine(" ")
-
-    for line in lines:
-        textob.textLine(line)
-
-    # Finish Up
-    c.drawText(textob)
-    c.showPage()
-    c.save()
-
-    response = HttpResponse(buf.getvalue(), content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=Raport_PDF{today}.pdf'
-
-    return response
-
-
 # Generate CSV raport
 def generate_CSV(request):
     get_what = request.GET.get('get_what')
@@ -1034,15 +940,16 @@ def generate_CSV(request):
         obj = Balance
 
     locale.setlocale(locale.LC_ALL, '')
-    DELIMITER = ';' if locale.localeconv()['decimal_point'] == ',' else ','
+    DELIMITER = ';'
 
     user_currency = Account.objects.get(user_id=request.user.id).get_currency_display()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename=Raport_CSV{today}.csv'
 
-    if obj.objects.filter(user=request.user).exists() and (start_date == '' or end_date == ''):
-        start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
-        end_date = today
+    if obj.objects.filter(user=request.user).exists():
+        if start_date == '' or end_date == '':
+            start_date = obj.objects.filter(user=request.user).order_by('-date').last().date
+            end_date = today
         response.write(u'\ufeff'.encode('utf8'))
 
     # Create a CSV writer

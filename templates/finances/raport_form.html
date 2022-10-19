@@ -24,7 +24,6 @@
 
     <!--Footer-->
     <div class="mb-1 rounded mx-10 grid grid-cols-1">
-      <button type="submit" class="my-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white " id="download_PDF">Pobierz PDF</button>
       <button type="submit" class="my-3 modal-close px-4 bg-purple-500 hover:bg-purple-400 p-2 rounded-lg text-white " id="download_CSV">Pobierz CSV</button>
     </div>
   </div>
@@ -34,12 +33,6 @@
 {% block js %}
 {% if raport_object == 'incomes' %}
 <script>
-   $('#download_PDF').on('click', function() {
-      let start_date = $('#start_date').val()
-      let end_date = $('#end_date').val()
-      window.open(`/finances/generate_PDF?get_what=incomes&start_date=${start_date}&end_date=${end_date}`, '_blank');
-    });
-
     $('#download_CSV').on('click', function() {
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
@@ -48,12 +41,6 @@
 </script>
 {% elif raport_object == 'outcomes' %}
 <script>
-  $('#download_PDF').on('click', function() {
-      let start_date = $('#start_date').val()
-      let end_date = $('#end_date').val()
-      window.open(`/finances/generate_PDF?get_what=outcomes&start_date=${start_date}&end_date=${end_date}`, '_blank');
-   });
-
    $('#download_CSV').on('click', function() {
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
@@ -62,12 +49,6 @@
 </script>
 {% else %}
 <script>
-  $('#download_PDF').on('click', function() {
-      let start_date = $('#start_date').val()
-      let end_date = $('#end_date').val()
-      window.open(`/finances/generate_PDF?get_what=balances`, '_blank');
-   });
-
    $('#download_CSV').on('click', function() {
       let start_date = $('#start_date').val()
       let end_date = $('#end_date').val()
