@@ -29,6 +29,8 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['monifyapp.up.railway.app']
 
+CSRF_TRUSTED_ORIGINS=['monifyapp.up.railway.app']
+
 # Application definition
 
 INSTALLED_APPS = [
