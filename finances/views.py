@@ -324,7 +324,10 @@ def income_list(request):
 
 # Return the last date of input month
 def get_last_date_of_month(year, month):
-    last_date = datetime(year, month + 1, 1) + timedelta(days=-1)
+    if month == 12:
+        last_date = datetime(year, month , 31)
+    else:
+        last_date = datetime(year, month + 1, 1) + timedelta(days=-1)
     return last_date.strftime("%Y-%m-%d")
 
 # generate summary data such as total balance, last incomes, last outcomes, etc.
